@@ -1,0 +1,18 @@
+
+# Private data
+.env
+*.db
+
+# Dolt database files (added by bd init)
+.dolt/
+
+
+# Node / Playwright
+node_modules/
+test-results/
+.playwright-mcp/
+bullet-check.png
+
+# Added by cargo
+
+/target

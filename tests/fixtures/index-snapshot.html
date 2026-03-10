@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Work Log</title>
+<style>
+    body {
+        font-family: system-ui, sans-serif;
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        color: #222;
+        background: #fafafa;
+    }
+    h1 { font-size: 1.6rem; margin-bottom: 1.5rem; }
+    h2 { font-size: 1.2rem; border-bottom: 1px solid #ddd; padding-bottom: 0.3rem; margin-top: 2rem; }
+    h3 { font-size: 1rem; color: #555; margin-bottom: 0.25rem; }
+    ul  { margin: 0.25rem 0 1rem 1.5rem; padding: 0; }
+    li  { margin: 0.2rem 0; }
+    ul:not(.entry-text ul) > li { display: flex; align-items: baseline; list-style: disc inside; }
+    .entry-text { flex: 1; }
+    .entry-text p { margin: 0; }
+    .entry-text ul, .entry-text ol { margin: 0; padding: 0; padding-left: 1.2rem; }
+    .entry-text li { display: list-item; margin: 0; }
+    a.button, button {
+        display: inline-block;
+        padding: 0.4rem 0.9rem;
+        background: #2563eb;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+    a.button:hover, button:hover { background: #1d4ed8; }
+    label { display: block; margin-bottom: 0.25rem; font-weight: 600; }
+    input[type=text], textarea {
+        width: 100%;
+        padding: 0.4rem 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 0.95rem;
+        box-sizing: border-box;
+    }
+    textarea { min-height: 6rem; resize: vertical; }
+    .form-group { margin-bottom: 1rem; }
+    .hint { font-size: 0.8rem; color: #666; margin-top: 0.2rem; }
+    .entry-text {
+        cursor: text;
+        padding: 2px 4px;
+        border-radius: 3px;
+        border: 1px solid transparent;
+        transition: border-color 0.15s, background-color 0.15s;
+    }
+    .entry-text:hover {
+        background: #f0f4ff;
+    }
+    .entry-edit-area {
+        width: 100%;
+        min-height: 3rem;
+        padding: 4px 6px;
+        border: 1px solid #93b4f5;
+        border-radius: 3px;
+        background: #f0f4ff;
+        font-family: system-ui, sans-serif;
+        font-size: 0.95rem;
+        resize: vertical;
+        box-sizing: border-box;
+    }
+    .entry-actions {
+        margin-left: 0.5rem;
+        font-size: 0.8rem;
+        visibility: hidden;
+        vertical-align: middle;
+    }
+    li:hover .entry-actions {
+        visibility: visible;
+    }
+</style>
+</head>
+<body>
+<h1>Work Log</h1><p><a href="/new" class="button">+ New Entry</a>&nbsp;<a href="/export" class="button" style="background:#6b7280;">Export Markdown</a></p><h2>Week 11, 2026</h2><h3>Mar 10, 2026</h3><ul><li>
+  <span class="entry-text" data-id="240" data-original="Ran standup">Ran standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="240" title="Delete">&#128465;</a>
+    <form id="del-240" method="post" action="/entries/240/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="241" data-original="Continued to work on LRN quarterly report 2">Continued to work on LRN quarterly report 2</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="241" title="Delete">&#128465;</a>
+    <form id="del-241" method="post" action="/entries/241/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="243" data-original="Met with rich on action plan assessment&#10;- Want to turn 3b into a tech talk for next tech talk slot to motivate. May 20th 2026. Internal Guide / Architecture Diagram for ONNX internal ML library&#10;- Consider AI workgroups/office hours.">Met with rich on action plan assessment
+<ul>
+<li>Want to turn 3b into a tech talk for next tech talk slot to motivate. May 20th 2026. Internal Guide / Architecture Diagram for ONNX internal ML library</li>
+<li>Consider AI workgroups/office hours.</li>
+</ul></span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="243" title="Delete">&#128465;</a>
+    <form id="del-243" method="post" action="/entries/243/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="244" data-original="Want to turn 3b into a tech talk for next tech talk slot to motivate. May 20th 2026. Internal Guide / Architecture Diagram for ONNX internal ML library">Want to turn 3b into a tech talk for next tech talk slot to motivate. May 20th 2026. Internal Guide / Architecture Diagram for ONNX internal ML library</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="244" title="Delete">&#128465;</a>
+    <form id="del-244" method="post" action="/entries/244/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="245" data-original="Consider AI workgroups/office hours.">Consider AI workgroups/office hours.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="245" title="Delete">&#128465;</a>
+    <form id="del-245" method="post" action="/entries/245/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="246" data-original="Attended bookclub">Attended bookclub</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="246" title="Delete">&#128465;</a>
+    <form id="del-246" method="post" action="/entries/246/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Mar 9, 2026</h3><ul><li>
+  <span class="entry-text" data-id="234" data-original="Attended standup">Attended standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="234" title="Delete">&#128465;</a>
+    <form id="del-234" method="post" action="/entries/234/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="235" data-original="Summarized world frame migration changes ([#17095](https://github.com/PickNikRobotics/moveit_pro/issues/17095)) and sent to Mario Prats — covers backend IK/grasp/viz behaviors and frontend frame references">Summarized world frame migration changes (<a href="https://github.com/PickNikRobotics/moveit_pro/issues/17095">#17095</a>) and sent to Mario Prats — covers backend IK/grasp/viz behaviors and frontend frame references</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="235" title="Delete">&#128465;</a>
+    <form id="del-235" method="post" action="/entries/235/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="236" data-original="Sent work log analysis to Rich for 1-on-1">Sent work log analysis to Rich for 1-on-1</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="236" title="Delete">&#128465;</a>
+    <form id="del-236" method="post" action="/entries/236/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="237" data-original="Set up VoiceMode with Claude Code (local Whisper + Kokoro TTS)">Set up VoiceMode with Claude Code (local Whisper + Kokoro TTS)</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="237" title="Delete">&#128465;</a>
+    <form id="del-237" method="post" action="/entries/237/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="238" data-original="Started long range nav quarterly report 2 ([#17214](https://github.com/PickNikRobotics/moveit_pro/issues/17214))">Started long range nav quarterly report 2 (<a href="https://github.com/PickNikRobotics/moveit_pro/issues/17214">#17214</a>)</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="238" title="Delete">&#128465;</a>
+    <form id="del-238" method="post" action="/entries/238/delete" style="display:none"></form>
+  </span>
+</li></ul><h2>Week 10, 2026</h2><h3>Mar 6, 2026</h3><ul><li>
+  <span class="entry-text" data-id="230" data-original="Attended standup">Attended standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="230" title="Delete">&#128465;</a>
+    <form id="del-230" method="post" action="/entries/230/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="231" data-original="Attended AI task force meeting. Submitted PR to add claude rules about jazzy porting that is being discussed.">Attended AI task force meeting. Submitted PR to add claude rules about jazzy porting that is being discussed.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="231" title="Delete">&#128465;</a>
+    <form id="del-231" method="post" action="/entries/231/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="232" data-original="Met with Shaur during mentoring time. Explained agents and skills etc. Reviewed old homework. Agreed that Griz would refactor and make smaller moving forward.">Met with Shaur during mentoring time. Explained agents and skills etc. Reviewed old homework. Agreed that Griz would refactor and make smaller moving forward.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="232" title="Delete">&#128465;</a>
+    <form id="del-232" method="post" action="/entries/232/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="233" data-original="Made a lot of progress on getting rid of the world frame and being about to switch frames in the ui. Posted a couple of videos to demo-gifs.">Made a lot of progress on getting rid of the world frame and being about to switch frames in the ui. Posted a couple of videos to demo-gifs.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="233" title="Delete">&#128465;</a>
+    <form id="del-233" method="post" action="/entries/233/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Mar 5, 2026</h3><ul><li>
+  <span class="entry-text" data-id="223" data-original="Told [Noah Wardlow](mailto:noah.wardlow@picknik.ai) about my GPU Process, VRAM, visualizer pane blanking issue.">Told <a href="mailto:noah.wardlow@picknik.ai">Noah Wardlow</a> about my GPU Process, VRAM, visualizer pane blanking issue.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="223" title="Delete">&#128465;</a>
+    <form id="del-223" method="post" action="/entries/223/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="224" data-original="Updated my claude developer guide pr and added to merge queue.">Updated my claude developer guide pr and added to merge queue.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="224" title="Delete">&#128465;</a>
+    <form id="del-224" method="post" action="/entries/224/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="225" data-original="Approved [Dave Coleman](mailto:dave@picknik.ai)’s claude pr about workflow rules and refactored the pre-commit hook, which is in PR.">Approved <a href="mailto:dave@picknik.ai">Dave Coleman</a>’s claude pr about workflow rules and refactored the pre-commit hook, which is in PR.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="225" title="Delete">&#128465;</a>
+    <form id="del-225" method="post" action="/entries/225/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="226" data-original="Annual review. Overall rating of 3 (satisfactory) and getting a 3% raise.">Annual review. Overall rating of 3 (satisfactory) and getting a 3% raise.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="226" title="Delete">&#128465;</a>
+    <form id="del-226" method="post" action="/entries/226/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="227" data-original="Finished touching up the Phase IIe final report and passed off to [Nathan Brooks](mailto:nathanbrooks@picknik.ai)">Finished touching up the Phase IIe final report and passed off to <a href="mailto:nathanbrooks@picknik.ai">Nathan Brooks</a></span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="227" title="Delete">&#128465;</a>
+    <form id="del-227" method="post" action="/entries/227/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="228" data-original="Submitted some utility skill PRs">Submitted some utility skill PRs</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="228" title="Delete">&#128465;</a>
+    <form id="del-228" method="post" action="/entries/228/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="229" data-original="Started working on LoadImageFromFile package bug">Started working on LoadImageFromFile package bug</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="229" title="Delete">&#128465;</a>
+    <form id="del-229" method="post" action="/entries/229/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Mar 4, 2026</h3><ul><li>
+  <span class="entry-text" data-id="213" data-original="Got my Claude pr through PR">Got my Claude pr through PR</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="213" title="Delete">&#128465;</a>
+    <form id="del-213" method="post" action="/entries/213/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="214" data-original="Attended standup">Attended standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="214" title="Delete">&#128465;</a>
+    <form id="del-214" method="post" action="/entries/214/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="215" data-original="Attended weeding">Attended weeding</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="215" title="Delete">&#128465;</a>
+    <form id="del-215" method="post" action="/entries/215/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="216" data-original="Attended bi weekly engineering meeting">Attended bi weekly engineering meeting</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="216" title="Delete">&#128465;</a>
+    <form id="del-216" method="post" action="/entries/216/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="217" data-original="Started a new claude developer guide PR.">Started a new claude developer guide PR.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="217" title="Delete">&#128465;</a>
+    <form id="del-217" method="post" action="/entries/217/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="218" data-original="Started a new PR for a few testing notes for claude.">Started a new PR for a few testing notes for claude.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="218" title="Delete">&#128465;</a>
+    <form id="del-218" method="post" action="/entries/218/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="219" data-original="Reviewed and merged a few of [Dave Coleman](mailto:dave@picknik.ai)’s claude PRs">Reviewed and merged a few of <a href="mailto:dave@picknik.ai">Dave Coleman</a>’s claude PRs</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="219" title="Delete">&#128465;</a>
+    <form id="del-219" method="post" action="/entries/219/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="220" data-original="Started reviewing erosion/dialation behaviors.">Started reviewing erosion/dialation behaviors.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="220" title="Delete">&#128465;</a>
+    <form id="del-220" method="post" action="/entries/220/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="221" data-original="Started converting some lab\_sim objectives from clipseg to SAM3.">Started converting some lab_sim objectives from clipseg to SAM3.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="221" title="Delete">&#128465;</a>
+    <form id="del-221" method="post" action="/entries/221/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="222" data-original="Made progress on the affordances Phase IIe final report. Finished in markdown, need to copy to google doc and get [Nathan Brooks](mailto:nathanbrooks@picknik.ai)’s section for the NPR added.">Made progress on the affordances Phase IIe final report. Finished in markdown, need to copy to google doc and get <a href="mailto:nathanbrooks@picknik.ai">Nathan Brooks</a>’s section for the NPR added.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="222" title="Delete">&#128465;</a>
+    <form id="del-222" method="post" action="/entries/222/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Mar 3, 2026</h3><ul><li>
+  <span class="entry-text" data-id="207" data-original="Started addressing [Dave Coleman](mailto:dave@picknik.ai)’s comments on my claude PR and reviewed his short claude pr.">Started addressing <a href="mailto:dave@picknik.ai">Dave Coleman</a>’s comments on my claude PR and reviewed his short claude pr.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="207" title="Delete">&#128465;</a>
+    <form id="del-207" method="post" action="/entries/207/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="208" data-original="Submitted Erode and Dilate PRs as test of claude.">Submitted Erode and Dilate PRs as test of claude.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="208" title="Delete">&#128465;</a>
+    <form id="del-208" method="post" action="/entries/208/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="209" data-original="Attended standup.">Attended standup.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="209" title="Delete">&#128465;</a>
+    <form id="del-209" method="post" action="/entries/209/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="210" data-original="Attended internal LRN checkin.">Attended internal LRN checkin.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="210" title="Delete">&#128465;</a>
+    <form id="del-210" method="post" action="/entries/210/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="211" data-original="Attended Kristen’s 3 month review.">Attended Kristen’s 3 month review.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="211" title="Delete">&#128465;</a>
+    <form id="del-211" method="post" action="/entries/211/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="212" data-original="Attended external LRM checkin.">Attended external LRM checkin.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="212" title="Delete">&#128465;</a>
+    <form id="del-212" method="post" action="/entries/212/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Mar 2, 2026</h3><ul><li>
+  <span class="entry-text" data-id="203" data-original="Attended standup">Attended standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="203" title="Delete">&#128465;</a>
+    <form id="del-203" method="post" action="/entries/203/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="204" data-original="Worked on converting [CLAUDE.md](http://CLAUDE.md) into skills, tools, and sub files according to “best practices”">Worked on converting <a href="http://CLAUDE.md">CLAUDE.md</a> into skills, tools, and sub files according to “best practices”</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="204" title="Delete">&#128465;</a>
+    <form id="del-204" method="post" action="/entries/204/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="205" data-original="Interviewed candidate">Interviewed candidate</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="205" title="Delete">&#128465;</a>
+    <form id="del-205" method="post" action="/entries/205/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="206" data-original="Met with [Kristen Such](mailto:kristen.such@picknik.ai)about chessbot and next steps. Merged her current PR as it was dragging progress. Decided that her next steps would be to get the SAN parser PR’ed first before the other functions.">Met with <a href="mailto:kristen.such@picknik.ai">Kristen Such</a>about chessbot and next steps. Merged her current PR as it was dragging progress. Decided that her next steps would be to get the SAN parser PR’ed first before the other functions.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="206" title="Delete">&#128465;</a>
+    <form id="del-206" method="post" action="/entries/206/delete" style="display:none"></form>
+  </span>
+</li></ul><h2>Week 9, 2026</h2><h3>Feb 26, 2026</h3><ul><li>
+  <span class="entry-text" data-id="199" data-original="Pulled main and verified SAM3 is working.">Pulled main and verified SAM3 is working.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="199" title="Delete">&#128465;</a>
+    <form id="del-199" method="post" action="/entries/199/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="200" data-original="Submitting small nit PRs for tests.">Submitting small nit PRs for tests.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="200" title="Delete">&#128465;</a>
+    <form id="del-200" method="post" action="/entries/200/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="201" data-original="Reviewed [Giovanni Remigi](mailto:giovanni.remigi@picknik.ai)’s visualization fix for mask publishing (first time viewing)">Reviewed <a href="mailto:giovanni.remigi@picknik.ai">Giovanni Remigi</a>’s visualization fix for mask publishing (first time viewing)</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="201" title="Delete">&#128465;</a>
+    <form id="del-201" method="post" action="/entries/201/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="202" data-original="PR’ed 3 objectives showing how to use SAM3">PR’ed 3 objectives showing how to use SAM3</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="202" title="Delete">&#128465;</a>
+    <form id="del-202" method="post" action="/entries/202/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Feb 25, 2026</h3><ul><li>
+  <span class="entry-text" data-id="194" data-original="Internal meetings about long range nav with [Michele Schenk](mailto:michele.schenk@picknik.ai)">Internal meetings about long range nav with <a href="mailto:michele.schenk@picknik.ai">Michele Schenk</a></span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="194" title="Delete">&#128465;</a>
+    <form id="del-194" method="post" action="/entries/194/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="195" data-original="Ran standup">Ran standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="195" title="Delete">&#128465;</a>
+    <form id="del-195" method="post" action="/entries/195/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="196" data-original="Gave tech talk about hitem3d and nano banana to make cad assets">Gave tech talk about hitem3d and nano banana to make cad assets</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="196" title="Delete">&#128465;</a>
+    <form id="del-196" method="post" action="/entries/196/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="197" data-original="Attended project management resource meeting and gave sprint goals for long range nav">Attended project management resource meeting and gave sprint goals for long range nav</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="197" title="Delete">&#128465;</a>
+    <form id="del-197" method="post" action="/entries/197/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="198" data-original="Got the final SAM3 behavior merged\!">Got the final SAM3 behavior merged!</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="198" title="Delete">&#128465;</a>
+    <form id="del-198" method="post" action="/entries/198/delete" style="display:none"></form>
+  </span>
+</li></ul><h2>Week 8, 2026</h2><h3>Feb 19, 2026</h3><ul><li>
+  <span class="entry-text" data-id="193" data-original="Conducted training">Conducted training</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="193" title="Delete">&#128465;</a>
+    <form id="del-193" method="post" action="/entries/193/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Feb 18, 2026</h3><ul><li>
+  <span class="entry-text" data-id="186" data-original="Approved [Dave Coleman](mailto:dave@picknik.ai)’s [CLAUDE.md](http://CLAUDE.md) PR">Approved <a href="mailto:dave@picknik.ai">Dave Coleman</a>’s <a href="http://CLAUDE.md">CLAUDE.md</a> PR</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="186" title="Delete">&#128465;</a>
+    <form id="del-186" method="post" action="/entries/186/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="187" data-original="Attended standup">Attended standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="187" title="Delete">&#128465;</a>
+    <form id="del-187" method="post" action="/entries/187/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="188" data-original="Attended weeding">Attended weeding</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="188" title="Delete">&#128465;</a>
+    <form id="del-188" method="post" action="/entries/188/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="189" data-original="Attended tech talk">Attended tech talk</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="189" title="Delete">&#128465;</a>
+    <form id="del-189" method="post" action="/entries/189/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="190" data-original="Attended coffee">Attended coffee</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="190" title="Delete">&#128465;</a>
+    <form id="del-190" method="post" action="/entries/190/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="191" data-original="Attended NASA LRN sync meeting">Attended NASA LRN sync meeting</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="191" title="Delete">&#128465;</a>
+    <form id="del-191" method="post" action="/entries/191/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="192" data-original="Broke up exemplar code into a few behaviors to simplify the main behavior while still giving exemplar bounding box options">Broke up exemplar code into a few behaviors to simplify the main behavior while still giving exemplar bounding box options</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="192" title="Delete">&#128465;</a>
+    <form id="del-192" method="post" action="/entries/192/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Feb 17, 2026</h3><ul><li>
+  <span class="entry-text" data-id="181" data-original="Conducted training">Conducted training</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="181" title="Delete">&#128465;</a>
+    <form id="del-181" method="post" action="/entries/181/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="182" data-original="Had a long discussion with [Breelyn Styler](mailto:breelyn.styler@picknik.ai)on tasking. Going to meeting today to arbitrate.">Had a long discussion with <a href="mailto:breelyn.styler@picknik.ai">Breelyn Styler</a>on tasking. Going to meeting today to arbitrate.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="182" title="Delete">&#128465;</a>
+    <form id="del-182" method="post" action="/entries/182/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="183" data-original="Attended bookclub.">Attended bookclub.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="183" title="Delete">&#128465;</a>
+    <form id="del-183" method="post" action="/entries/183/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="184" data-original="Had the tasking long range nav/phoebe\_ws meeting and clarified what [Breelyn Styler](mailto:breelyn.styler@picknik.ai)and [Kristen Such](mailto:kristen.such@picknik.ai)are doing [https://docs.google.com/presentation/d/1Yna-B1Jfaz4Ts9L4PmTu0EdTyDv22kk\_qhSYVlZfEzY/edit?slide=id.p\#slide=id.p](https://docs.google.com/presentation/d/1Yna-B1Jfaz4Ts9L4PmTu0EdTyDv22kk_qhSYVlZfEzY/edit?slide=id.p#slide=id.p)">Had the tasking long range nav/phoebe_ws meeting and clarified what <a href="mailto:breelyn.styler@picknik.ai">Breelyn Styler</a>and <a href="mailto:kristen.such@picknik.ai">Kristen Such</a>are doing <a href="https://docs.google.com/presentation/d/1Yna-B1Jfaz4Ts9L4PmTu0EdTyDv22kk_qhSYVlZfEzY/edit?slide=id.p#slide=id.p">https://docs.google.com/presentation/d/1Yna-B1Jfaz4Ts9L4PmTu0EdTyDv22kk_qhSYVlZfEzY/edit?slide=id.p#slide=id.p</a></span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="184" title="Delete">&#128465;</a>
+    <form id="del-184" method="post" action="/entries/184/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="185" data-original="Kept troubleshooting SAM3 behavior. Got through image exemplar producing really bad stuff, but now want to troubleshoot why the background is being masked instead of parts in image exemplar. Got through that too by adding bounding box padding for image exemplar.">Kept troubleshooting SAM3 behavior. Got through image exemplar producing really bad stuff, but now want to troubleshoot why the background is being masked instead of parts in image exemplar. Got through that too by adding bounding box padding for image exemplar.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="185" title="Delete">&#128465;</a>
+    <form id="del-185" method="post" action="/entries/185/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Feb 16, 2026</h3><ul><li>
+  <span class="entry-text" data-id="177" data-original="Attended standup">Attended standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="177" title="Delete">&#128465;</a>
+    <form id="del-177" method="post" action="/entries/177/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="178" data-original="Meeting with [Nathan Brooks](mailto:nathanbrooks@picknik.ai)on Phase IIe status">Meeting with <a href="mailto:nathanbrooks@picknik.ai">Nathan Brooks</a>on Phase IIe status</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="178" title="Delete">&#128465;</a>
+    <form id="del-178" method="post" action="/entries/178/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="179" data-original="Met with [Kristen Such](mailto:kristen.such@picknik.ai)and discussed her Meta Quest tutorial/development issues">Met with <a href="mailto:kristen.such@picknik.ai">Kristen Such</a>and discussed her Meta Quest tutorial/development issues</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="179" title="Delete">&#128465;</a>
+    <form id="del-179" method="post" action="/entries/179/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="180" data-original="Troubleshot sam3 behavior. Text prompt works but image exemplar is having issues.">Troubleshot sam3 behavior. Text prompt works but image exemplar is having issues.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="180" title="Delete">&#128465;</a>
+    <form id="del-180" method="post" action="/entries/180/delete" style="display:none"></form>
+  </span>
+</li></ul><h2>Week 5, 2026</h2><h3>Jan 26, 2026</h3><ul><li>
+  <span class="entry-text" data-id="173" data-original="Attended 9.0 status meeting">Attended 9.0 status meeting</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="173" title="Delete">&#128465;</a>
+    <form id="del-173" method="post" action="/entries/173/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="174" data-original="Attended standup">Attended standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="174" title="Delete">&#128465;</a>
+    <form id="del-174" method="post" action="/entries/174/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="175" data-original="Helped [Michael Wrock](mailto:michael.wrock@picknik.ai) with PR and claude">Helped <a href="mailto:michael.wrock@picknik.ai">Michael Wrock</a> with PR and claude</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="175" title="Delete">&#128465;</a>
+    <form id="del-175" method="post" action="/entries/175/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="176" data-original="Interviewed Furkan Davulcu">Interviewed Furkan Davulcu</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="176" title="Delete">&#128465;</a>
+    <form id="del-176" method="post" action="/entries/176/delete" style="display:none"></form>
+  </span>
+</li></ul><h2>Week 4, 2026</h2><h3>Jan 23, 2026</h3><ul><li>
+  <span class="entry-text" data-id="169" data-original="Ran standup">Ran standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="169" title="Delete">&#128465;</a>
+    <form id="del-169" method="post" action="/entries/169/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="170" data-original="Decided on checking in claude files">Decided on checking in claude files</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="170" title="Delete">&#128465;</a>
+    <form id="del-170" method="post" action="/entries/170/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="171" data-original="Met with Gecko Robotics and reviewed our ML stack">Met with Gecko Robotics and reviewed our ML stack</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="171" title="Delete">&#128465;</a>
+    <form id="del-171" method="post" action="/entries/171/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="172" data-original="Worked on onnx type safety pr(s)">Worked on onnx type safety pr(s)</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="172" title="Delete">&#128465;</a>
+    <form id="del-172" method="post" action="/entries/172/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Jan 22, 2026</h3><ul><li>
+  <span class="entry-text" data-id="165" data-original="Attended standup">Attended standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="165" title="Delete">&#128465;</a>
+    <form id="del-165" method="post" action="/entries/165/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="166" data-original="Met with [Mario Prats](mailto:mario.prats@picknik.ai)about my malloc counter bug and what to look into">Met with <a href="mailto:mario.prats@picknik.ai">Mario Prats</a>about my malloc counter bug and what to look into</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="166" title="Delete">&#128465;</a>
+    <form id="del-166" method="post" action="/entries/166/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="167" data-original="Reviewed [Josh Whitley](mailto:josh.whitley@picknik.ai)’s PRs">Reviewed <a href="mailto:josh.whitley@picknik.ai">Josh Whitley</a>’s PRs</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="167" title="Delete">&#128465;</a>
+    <form id="del-167" method="post" action="/entries/167/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="168" data-original="Worked on the ONNX format PR">Worked on the ONNX format PR</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="168" title="Delete">&#128465;</a>
+    <form id="del-168" method="post" action="/entries/168/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Jan 21, 2026</h3><ul><li>
+  <span class="entry-text" data-id="160" data-original="Met with [Bilal Gill](mailto:bilal.gill@picknik.ai)about Gecko">Met with <a href="mailto:bilal.gill@picknik.ai">Bilal Gill</a>about Gecko</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="160" title="Delete">&#128465;</a>
+    <form id="del-160" method="post" action="/entries/160/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="161" data-original="Standup">Standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="161" title="Delete">&#128465;</a>
+    <form id="del-161" method="post" action="/entries/161/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="162" data-original="Weeding">Weeding</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="162" title="Delete">&#128465;</a>
+    <form id="del-162" method="post" action="/entries/162/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="163" data-original="Met with [Jonathan Fries](mailto:jonathan.fries@picknik.ai), [Michael Janney](mailto:michael.janney@picknik.ai), [Dave Grant](mailto:dave.grant@picknik.ai),[Bilal Gill](mailto:bilal.gill@picknik.ai) about Gecko">Met with <a href="mailto:jonathan.fries@picknik.ai">Jonathan Fries</a>, <a href="mailto:michael.janney@picknik.ai">Michael Janney</a>, <a href="mailto:dave.grant@picknik.ai">Dave Grant</a>,<a href="mailto:bilal.gill@picknik.ai">Bilal Gill</a> about Gecko</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="163" title="Delete">&#128465;</a>
+    <form id="del-163" method="post" action="/entries/163/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="164" data-original="Tried to get the malloc counter bug to a stand I can hand it off to [Mario Prats](mailto:mario.prats@picknik.ai). Found out the initial approach wasn’t failing on allocations. Updated approach does but there’s actually allocations that shouldn’t be happening in our controllers. Had claude investigate and indeed there are very plausible places where it looks like we are allocating so I want to prove that to Mario but ultimately he should decide how the code changes.">Tried to get the malloc counter bug to a stand I can hand it off to <a href="mailto:mario.prats@picknik.ai">Mario Prats</a>. Found out the initial approach wasn’t failing on allocations. Updated approach does but there’s actually allocations that shouldn’t be happening in our controllers. Had claude investigate and indeed there are very plausible places where it looks like we are allocating so I want to prove that to Mario but ultimately he should decide how the code changes.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="164" title="Delete">&#128465;</a>
+    <form id="del-164" method="post" action="/entries/164/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Jan 20, 2026</h3><ul><li>
+  <span class="entry-text" data-id="152" data-original="Approved [Giovanni Remigi](mailto:giovanni.remigi@picknik.ai)’s PR">Approved <a href="mailto:giovanni.remigi@picknik.ai">Giovanni Remigi</a>’s PR</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="152" title="Delete">&#128465;</a>
+    <form id="del-152" method="post" action="/entries/152/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="153" data-original="Ran standup">Ran standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="153" title="Delete">&#128465;</a>
+    <form id="del-153" method="post" action="/entries/153/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="154" data-original="Posed ML survey">Posed ML survey</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="154" title="Delete">&#128465;</a>
+    <form id="del-154" method="post" action="/entries/154/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="155" data-original="Interviewed candidate">Interviewed candidate</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="155" title="Delete">&#128465;</a>
+    <form id="del-155" method="post" action="/entries/155/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="156" data-original="Bookclub">Bookclub</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="156" title="Delete">&#128465;</a>
+    <form id="del-156" method="post" action="/entries/156/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="157" data-original="Approved [Josh Whitley](mailto:josh.whitley@picknik.ai)’s PR">Approved <a href="mailto:josh.whitley@picknik.ai">Josh Whitley</a>’s PR</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="157" title="Delete">&#128465;</a>
+    <form id="del-157" method="post" action="/entries/157/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="158" data-original="Updated malloc\_counter PR">Updated malloc_counter PR</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="158" title="Delete">&#128465;</a>
+    <form id="del-158" method="post" action="/entries/158/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="159" data-original="Created and deliberated ONNX Image type PR for safer/more maintainable types">Created and deliberated ONNX Image type PR for safer/more maintainable types</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="159" title="Delete">&#128465;</a>
+    <form id="del-159" method="post" action="/entries/159/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Jan 19, 2026</h3><ul><li>
+  <span class="entry-text" data-id="144" data-original="Interviewed candidate">Interviewed candidate</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="144" title="Delete">&#128465;</a>
+    <form id="del-144" method="post" action="/entries/144/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="145" data-original="Attended standup">Attended standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="145" title="Delete">&#128465;</a>
+    <form id="del-145" method="post" action="/entries/145/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="146" data-original="Reviewed [Kristen Such](mailto:kristen.such@picknik.ai)’s PR">Reviewed <a href="mailto:kristen.such@picknik.ai">Kristen Such</a>’s PR</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="146" title="Delete">&#128465;</a>
+    <form id="del-146" method="post" action="/entries/146/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="147" data-original="Submitted next sam3 pr about box conversions and some refactor">Submitted next sam3 pr about box conversions and some refactor</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="147" title="Delete">&#128465;</a>
+    <form id="del-147" method="post" action="/entries/147/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="148" data-original="Met with [Kristen Such](mailto:kristen.such@picknik.ai)about her support ticket and her coverage woes">Met with <a href="mailto:kristen.such@picknik.ai">Kristen Such</a>about her support ticket and her coverage woes</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="148" title="Delete">&#128465;</a>
+    <form id="del-148" method="post" action="/entries/148/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="149" data-original="Reviewed [Giovanni Remigi](mailto:giovanni.remigi@picknik.ai)’s PR">Reviewed <a href="mailto:giovanni.remigi@picknik.ai">Giovanni Remigi</a>’s PR</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="149" title="Delete">&#128465;</a>
+    <form id="del-149" method="post" action="/entries/149/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="150" data-original="Fixed up my PR from automated feedback">Fixed up my PR from automated feedback</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="150" title="Delete">&#128465;</a>
+    <form id="del-150" method="post" action="/entries/150/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="151" data-original="Submitted a PR to fix the malloc\_counter issue">Submitted a PR to fix the malloc_counter issue</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="151" title="Delete">&#128465;</a>
+    <form id="del-151" method="post" action="/entries/151/delete" style="display:none"></form>
+  </span>
+</li></ul><h2>Week 3, 2026</h2><h3>Jan 16, 2026</h3><ul><li>
+  <span class="entry-text" data-id="139" data-original="Attended sprint planning meeting">Attended sprint planning meeting</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="139" title="Delete">&#128465;</a>
+    <form id="del-139" method="post" action="/entries/139/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="140" data-original="Attending sprint pruning">Attending sprint pruning</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="140" title="Delete">&#128465;</a>
+    <form id="del-140" method="post" action="/entries/140/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="141" data-original="Fixed up my sigmoid PR">Fixed up my sigmoid PR</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="141" title="Delete">&#128465;</a>
+    <form id="del-141" method="post" action="/entries/141/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="142" data-original="Started claude on looking into malloc\_counter bug">Started claude on looking into malloc_counter bug</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="142" title="Delete">&#128465;</a>
+    <form id="del-142" method="post" action="/entries/142/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="143" data-original="Touched on the many sam3 prs in the iron">Touched on the many sam3 prs in the iron</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="143" title="Delete">&#128465;</a>
+    <form id="del-143" method="post" action="/entries/143/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Jan 15, 2026</h3><ul><li>
+  <span class="entry-text" data-id="133" data-original="Reviewed [Kristen Such](mailto:kristen.such@picknik.ai)’s PR">Reviewed <a href="mailto:kristen.such@picknik.ai">Kristen Such</a>’s PR</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="133" title="Delete">&#128465;</a>
+    <form id="del-133" method="post" action="/entries/133/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="134" data-original="Troubleshot nvidia pro issue on my workstation with [Josh Whitley](mailto:josh.whitley@picknik.ai)">Troubleshot nvidia pro issue on my workstation with <a href="mailto:josh.whitley@picknik.ai">Josh Whitley</a></span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="134" title="Delete">&#128465;</a>
+    <form id="del-134" method="post" action="/entries/134/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="135" data-original="Updated my tickets for pointing">Updated my tickets for pointing</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="135" title="Delete">&#128465;</a>
+    <form id="del-135" method="post" action="/entries/135/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="136" data-original="Fixed up sam3 conversion and sigmoid PR with more tests and added symmetric conversions">Fixed up sam3 conversion and sigmoid PR with more tests and added symmetric conversions</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="136" title="Delete">&#128465;</a>
+    <form id="del-136" method="post" action="/entries/136/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="137" data-original="Worked on [Shaurya Kumar](mailto:shaurya.kumar@picknik.ai)’s homework.">Worked on <a href="mailto:shaurya.kumar@picknik.ai">Shaurya Kumar</a>’s homework.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="137" title="Delete">&#128465;</a>
+    <form id="del-137" method="post" action="/entries/137/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="138" data-original="Got claude started on the next pr about text and geometry encoder">Got claude started on the next pr about text and geometry encoder</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="138" title="Delete">&#128465;</a>
+    <form id="del-138" method="post" action="/entries/138/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Jan 14, 2026</h3><ul><li>
+  <span class="entry-text" data-id="128" data-original="Ran standup">Ran standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="128" title="Delete">&#128465;</a>
+    <form id="del-128" method="post" action="/entries/128/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="129" data-original="Submitted pr to add some utilities for SAM3, sigmoid and mask conversion">Submitted pr to add some utilities for SAM3, sigmoid and mask conversion</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="129" title="Delete">&#128465;</a>
+    <form id="del-129" method="post" action="/entries/129/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="130" data-original="Reviewed [Kristen Such](mailto:kristen.such@picknik.ai)’s removal prs.">Reviewed <a href="mailto:kristen.such@picknik.ai">Kristen Such</a>’s removal prs.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="130" title="Delete">&#128465;</a>
+    <form id="del-130" method="post" action="/entries/130/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="131" data-original="Got started with claude on the next set of sam3 prs and added them to draft">Got started with claude on the next set of sam3 prs and added them to draft</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="131" title="Delete">&#128465;</a>
+    <form id="del-131" method="post" action="/entries/131/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="132" data-original="Mentored, [Kristen Such](mailto:kristen.such@picknik.ai), talked about “constant functions” and how they should be turned into variables, how to test functions directly, what line coverage vs branch coverage is, and troubleshot her pr not getting the right coverage (probably a configuration error), and that she needs to be weary of her editor.">Mentored, <a href="mailto:kristen.such@picknik.ai">Kristen Such</a>, talked about “constant functions” and how they should be turned into variables, how to test functions directly, what line coverage vs branch coverage is, and troubleshot her pr not getting the right coverage (probably a configuration error), and that she needs to be weary of her editor.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="132" title="Delete">&#128465;</a>
+    <form id="del-132" method="post" action="/entries/132/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Jan 13, 2026</h3><ul><li>
+  <span class="entry-text" data-id="121" data-original="Attended standup">Attended standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="121" title="Delete">&#128465;</a>
+    <form id="del-121" method="post" action="/entries/121/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="122" data-original="Backlog weeding">Backlog weeding</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="122" title="Delete">&#128465;</a>
+    <form id="del-122" method="post" action="/entries/122/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="123" data-original="Virtual coffee">Virtual coffee</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="123" title="Delete">&#128465;</a>
+    <form id="del-123" method="post" action="/entries/123/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="124" data-original="![][image2]">![][image2]</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="124" title="Delete">&#128465;</a>
+    <form id="del-124" method="post" action="/entries/124/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="125" data-original="Attending roadmap meeting">Attending roadmap meeting</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="125" title="Delete">&#128465;</a>
+    <form id="del-125" method="post" action="/entries/125/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="126" data-original="Got FFI merged">Got FFI merged</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="126" title="Delete">&#128465;</a>
+    <form id="del-126" method="post" action="/entries/126/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="127" data-original="Worked on chunking up SAM3 port for moveit\_pro">Worked on chunking up SAM3 port for moveit_pro</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="127" title="Delete">&#128465;</a>
+    <form id="del-127" method="post" action="/entries/127/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Jan 12, 2026</h3><ul><li>
+  <span class="entry-text" data-id="115" data-original="Updated FFI pr to unify function call">Updated FFI pr to unify function call</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="115" title="Delete">&#128465;</a>
+    <form id="del-115" method="post" action="/entries/115/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="116" data-original="Attended standup">Attended standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="116" title="Delete">&#128465;</a>
+    <form id="del-116" method="post" action="/entries/116/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="117" data-original="![][image1]">![][image1]</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="117" title="Delete">&#128465;</a>
+    <form id="del-117" method="post" action="/entries/117/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="118" data-original="One on one with Rich">One on one with Rich</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="118" title="Delete">&#128465;</a>
+    <form id="del-118" method="post" action="/entries/118/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="119" data-original="Worked on the sam3 port with claude to troubleshoot bounding box issues">Worked on the sam3 port with claude to troubleshoot bounding box issues</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="119" title="Delete">&#128465;</a>
+    <form id="del-119" method="post" action="/entries/119/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="120" data-original="Started visual odometry repo with claude (using ralph and beads)">Started visual odometry repo with claude (using ralph and beads)</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="120" title="Delete">&#128465;</a>
+    <form id="del-120" method="post" action="/entries/120/delete" style="display:none"></form>
+  </span>
+</li></ul><h2>Week 2, 2026</h2><h3>Jan 9, 2026</h3><ul><li>
+  <span class="entry-text" data-id="111" data-original="Updated onnx\_sam3 scaffold pr based on automated feedback">Updated onnx_sam3 scaffold pr based on automated feedback</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="111" title="Delete">&#128465;</a>
+    <form id="del-111" method="post" action="/entries/111/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="112" data-original="Reviewed and merged [Kristen Such](mailto:kristen.such@picknik.ai)’s PRs">Reviewed and merged <a href="mailto:kristen.such@picknik.ai">Kristen Such</a>’s PRs</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="112" title="Delete">&#128465;</a>
+    <form id="del-112" method="post" action="/entries/112/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="113" data-original="Got onnx\_sam3 pr scaffold pr merged">Got onnx_sam3 pr scaffold pr merged</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="113" title="Delete">&#128465;</a>
+    <form id="del-113" method="post" action="/entries/113/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="114" data-original="Submitted sam3 tokenizaton ffi PR">Submitted sam3 tokenizaton ffi PR</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="114" title="Delete">&#128465;</a>
+    <form id="del-114" method="post" action="/entries/114/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Jan 8, 2026</h3><ul><li>
+  <span class="entry-text" data-id="108" data-original="Reviewed [Kristen Such](mailto:kristen.such@picknik.ai)’s prs">Reviewed <a href="mailto:kristen.such@picknik.ai">Kristen Such</a>’s prs</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="108" title="Delete">&#128465;</a>
+    <form id="del-108" method="post" action="/entries/108/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="109" data-original="Attended/spoke at monthly meeting">Attended/spoke at monthly meeting</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="109" title="Delete">&#128465;</a>
+    <form id="del-109" method="post" action="/entries/109/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="110" data-original="Got onnx\_sam3 scaffold pr submitted">Got onnx_sam3 scaffold pr submitted</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="110" title="Delete">&#128465;</a>
+    <form id="del-110" method="post" action="/entries/110/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Jan 7, 2026</h3><ul><li>
+  <span class="entry-text" data-id="103" data-original="Ran standup">Ran standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="103" title="Delete">&#128465;</a>
+    <form id="del-103" method="post" action="/entries/103/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="104" data-original="Attending engineering meeting">Attending engineering meeting</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="104" title="Delete">&#128465;</a>
+    <form id="del-104" method="post" action="/entries/104/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="105" data-original="Gave presentation on multiagent claude workflows">Gave presentation on multiagent claude workflows</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="105" title="Delete">&#128465;</a>
+    <form id="del-105" method="post" action="/entries/105/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="106" data-original="Tested the sam3 onnx weights that we are going to use from the usls repo">Tested the sam3 onnx weights that we are going to use from the usls repo</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="106" title="Delete">&#128465;</a>
+    <form id="del-106" method="post" action="/entries/106/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="107" data-original="Started using claude to port sam3 code to pixi cpp so that it can be inspected and ported to moveit pro">Started using claude to port sam3 code to pixi cpp so that it can be inspected and ported to moveit pro</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="107" title="Delete">&#128465;</a>
+    <form id="del-107" method="post" action="/entries/107/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Jan 6, 2026</h3><ul><li>
+  <span class="entry-text" data-id="98" data-original="Reviewed, approved, troubleshot Laco’s PRs he tagged me in">Reviewed, approved, troubleshot Laco’s PRs he tagged me in</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="98" title="Delete">&#128465;</a>
+    <form id="del-98" method="post" action="/entries/98/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="99" data-original="Approved [Kristen Such](mailto:kristen.such@picknik.ai)’s PRs">Approved <a href="mailto:kristen.such@picknik.ai">Kristen Such</a>’s PRs</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="99" title="Delete">&#128465;</a>
+    <form id="del-99" method="post" action="/entries/99/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="100" data-original="Triaged [https://github.com/PickNikRobotics/moveit\_pro/issues/15695](https://github.com/PickNikRobotics/moveit_pro/issues/15695)">Triaged <a href="https://github.com/PickNikRobotics/moveit_pro/issues/15695">https://github.com/PickNikRobotics/moveit_pro/issues/15695</a></span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="100" title="Delete">&#128465;</a>
+    <form id="del-100" method="post" action="/entries/100/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="101" data-original="Closed [https://github.com/PickNikRobotics/moveit\_pro/issues/15693](https://github.com/PickNikRobotics/moveit_pro/issues/15693)">Closed <a href="https://github.com/PickNikRobotics/moveit_pro/issues/15693">https://github.com/PickNikRobotics/moveit_pro/issues/15693</a></span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="101" title="Delete">&#128465;</a>
+    <form id="del-101" method="post" action="/entries/101/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="102" data-original="Tried to test the onnx models but ran out of vram. Will test on my workstation">Tried to test the onnx models but ran out of vram. Will test on my workstation</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="102" title="Delete">&#128465;</a>
+    <form id="del-102" method="post" action="/entries/102/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Jan 5, 2026</h3><ul><li>
+  <span class="entry-text" data-id="93" data-original="Ran standup">Ran standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="93" title="Delete">&#128465;</a>
+    <form id="del-93" method="post" action="/entries/93/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="94" data-original="1-on-1 with [Richard Pratt](mailto:richard.pratt@picknik.ai)">1-on-1 with <a href="mailto:richard.pratt@picknik.ai">Richard Pratt</a></span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="94" title="Delete">&#128465;</a>
+    <form id="del-94" method="post" action="/entries/94/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="95" data-original="Moved tickets around about onnx refactor and SAM3">Moved tickets around about onnx refactor and SAM3</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="95" title="Delete">&#128465;</a>
+    <form id="del-95" method="post" action="/entries/95/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="96" data-original="Updated filter mask pr, again, merged">Updated filter mask pr, again, merged</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="96" title="Delete">&#128465;</a>
+    <form id="del-96" method="post" action="/entries/96/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="97" data-original="Met with [Kristen Such](mailto:kristen.such@picknik.ai)about her 9.0 tasking and how to submit PRs to reduce cognitive load for the reviewer. Went over her chessbot current state and helped her troubleshoot git and refactor her pr to increase test coverage but not using ostream directly.">Met with <a href="mailto:kristen.such@picknik.ai">Kristen Such</a>about her 9.0 tasking and how to submit PRs to reduce cognitive load for the reviewer. Went over her chessbot current state and helped her troubleshoot git and refactor her pr to increase test coverage but not using ostream directly.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="97" title="Delete">&#128465;</a>
+    <form id="del-97" method="post" action="/entries/97/delete" style="display:none"></form>
+  </span>
+</li></ul><h2>Week 1, 2026</h2><h3>Dec 30, 2025</h3><ul><li>
+  <span class="entry-text" data-id="88" data-original="Ran standup">Ran standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="88" title="Delete">&#128465;</a>
+    <form id="del-88" method="post" action="/entries/88/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="89" data-original="Product roadmap meeting">Product roadmap meeting</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="89" title="Delete">&#128465;</a>
+    <form id="del-89" method="post" action="/entries/89/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="90" data-original="Helped [Sina Aghli](mailto:sina.aghli@picknik.ai)with his ml perception issues">Helped <a href="mailto:sina.aghli@picknik.ai">Sina Aghli</a>with his ml perception issues</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="90" title="Delete">&#128465;</a>
+    <form id="del-90" method="post" action="/entries/90/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="91" data-original="Got my automasking tutorial pr up">Got my automasking tutorial pr up</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="91" title="Delete">&#128465;</a>
+    <form id="del-91" method="post" action="/entries/91/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="92" data-original="Added bug reports for 9.0 about behavior properties boxes missing and title getting hidden with long descriptions.">Added bug reports for 9.0 about behavior properties boxes missing and title getting hidden with long descriptions.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="92" title="Delete">&#128465;</a>
+    <form id="del-92" method="post" action="/entries/92/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Dec 29, 2025</h3><ul><li>
+  <span class="entry-text" data-id="80" data-original="Ran standup">Ran standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="80" title="Delete">&#128465;</a>
+    <form id="del-80" method="post" action="/entries/80/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="81" data-original="Approved [Will Yingling](mailto:will.yingling@picknik.ai)’s autocomplete pr">Approved <a href="mailto:will.yingling@picknik.ai">Will Yingling</a>’s autocomplete pr</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="81" title="Delete">&#128465;</a>
+    <form id="del-81" method="post" action="/entries/81/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="82" data-original="Updated my mask filter PR again">Updated my mask filter PR again</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="82" title="Delete">&#128465;</a>
+    <form id="del-82" method="post" action="/entries/82/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="83" data-original="Approved [David Sobek](mailto:david.sobek@picknik.ai)’s for each PR">Approved <a href="mailto:david.sobek@picknik.ai">David Sobek</a>’s for each PR</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="83" title="Delete">&#128465;</a>
+    <form id="del-83" method="post" action="/entries/83/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="84" data-original="Finished [Michele Schenk](mailto:michele.schenk@picknik.ai)’s questionnaire">Finished <a href="mailto:michele.schenk@picknik.ai">Michele Schenk</a>’s questionnaire</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="84" title="Delete">&#128465;</a>
+    <form id="del-84" method="post" action="/entries/84/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="85" data-original="Met with [Michele Schenk](mailto:michele.schenk@picknik.ai)">Met with <a href="mailto:michele.schenk@picknik.ai">Michele Schenk</a></span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="85" title="Delete">&#128465;</a>
+    <form id="del-85" method="post" action="/entries/85/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="86" data-original="Met with [Kristen Such](mailto:kristen.such@picknik.ai) about her project. Troubleshot sonarqube, talked about her PR and how she broke things up, a bit about namespaces and library choices.">Met with <a href="mailto:kristen.such@picknik.ai">Kristen Such</a> about her project. Troubleshot sonarqube, talked about her PR and how she broke things up, a bit about namespaces and library choices.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="86" title="Delete">&#128465;</a>
+    <form id="del-86" method="post" action="/entries/86/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="87" data-original="Finished draft of Affordances Quarterly report and sent to Jonathan">Finished draft of Affordances Quarterly report and sent to Jonathan</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="87" title="Delete">&#128465;</a>
+    <form id="del-87" method="post" action="/entries/87/delete" style="display:none"></form>
+  </span>
+</li></ul><h2>Week 52, 2025</h2><h3>Dec 24, 2025</h3><ul><li>
+  <span class="entry-text" data-id="76" data-original="Ran standup">Ran standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="76" title="Delete">&#128465;</a>
+    <form id="del-76" method="post" action="/entries/76/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="77" data-original="Attended engineering biweekly meeting">Attended engineering biweekly meeting</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="77" title="Delete">&#128465;</a>
+    <form id="del-77" method="post" action="/entries/77/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="78" data-original="Updated filter masks PR.">Updated filter masks PR.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="78" title="Delete">&#128465;</a>
+    <form id="del-78" method="post" action="/entries/78/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="79" data-original="Worked on Affordances quarterly report">Worked on Affordances quarterly report</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="79" title="Delete">&#128465;</a>
+    <form id="del-79" method="post" action="/entries/79/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Dec 23, 2025</h3><ul><li>
+  <span class="entry-text" data-id="69" data-original="Responded to filter masks pr comments">Responded to filter masks pr comments</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="69" title="Delete">&#128465;</a>
+    <form id="del-69" method="post" action="/entries/69/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="70" data-original="Coffee meeting">Coffee meeting</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="70" title="Delete">&#128465;</a>
+    <form id="del-70" method="post" action="/entries/70/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="71" data-original="Rich 1-on-1">Rich 1-on-1</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="71" title="Delete">&#128465;</a>
+    <form id="del-71" method="post" action="/entries/71/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="72" data-original="Sent Rich the update from list in slack (which he is tracking in writing)">Sent Rich the update from list in slack (which he is tracking in writing)</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="72" title="Delete">&#128465;</a>
+    <form id="del-72" method="post" action="/entries/72/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="73" data-original="Met with Sina on soda stream bottle perception pipeline">Met with Sina on soda stream bottle perception pipeline</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="73" title="Delete">&#128465;</a>
+    <form id="del-73" method="post" action="/entries/73/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="74" data-original="Did a little bit of moveitpro cloud troubleshooting, restarted the instance server, and sent some memory stats to Noah">Did a little bit of moveitpro cloud troubleshooting, restarted the instance server, and sent some memory stats to Noah</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="74" title="Delete">&#128465;</a>
+    <form id="del-74" method="post" action="/entries/74/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="75" data-original="Met with Kristen on her chessbot project. Gave her feedback on array storage (representation vs storage), lambda usage, parsing and separating responsibilities and maintainability on her fen\_parser.">Met with Kristen on her chessbot project. Gave her feedback on array storage (representation vs storage), lambda usage, parsing and separating responsibilities and maintainability on her fen_parser.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="75" title="Delete">&#128465;</a>
+    <form id="del-75" method="post" action="/entries/75/delete" style="display:none"></form>
+  </span>
+</li></ul><h2>Week 51, 2025</h2><h3>Dec 19, 2025</h3><ul><li>
+  <span class="entry-text" data-id="63" data-original="Worked on tickets a bit more">Worked on tickets a bit more</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="63" title="Delete">&#128465;</a>
+    <form id="del-63" method="post" action="/entries/63/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="64" data-original="Sprint planning/pointing meeting">Sprint planning/pointing meeting</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="64" title="Delete">&#128465;</a>
+    <form id="del-64" method="post" action="/entries/64/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="65" data-original="Met with Shaur over C++ homework">Met with Shaur over C++ homework</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="65" title="Delete">&#128465;</a>
+    <form id="del-65" method="post" action="/entries/65/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="66" data-original="PR’ed to [Kristen Such](mailto:kristen.such@picknik.ai)’s chess bot so we could work more next week">PR’ed to <a href="mailto:kristen.such@picknik.ai">Kristen Such</a>’s chess bot so we could work more next week</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="66" title="Delete">&#128465;</a>
+    <form id="del-66" method="post" action="/entries/66/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="67" data-original="Got Filter2DMasks and GetMaskProperties PR up">Got Filter2DMasks and GetMaskProperties PR up</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="67" title="Delete">&#128465;</a>
+    <form id="del-67" method="post" action="/entries/67/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="68" data-original="Started automasking tutorial">Started automasking tutorial</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="68" title="Delete">&#128465;</a>
+    <form id="del-68" method="post" action="/entries/68/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Dec 18, 2025</h3><ul><li>
+  <span class="entry-text" data-id="59" data-original="Ran standup">Ran standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="59" title="Delete">&#128465;</a>
+    <form id="del-59" method="post" action="/entries/59/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="60" data-original="Synced with [Kristen Such](mailto:kristen.such@picknik.ai)about where we’re going with SAM3">Synced with <a href="mailto:kristen.such@picknik.ai">Kristen Such</a>about where we’re going with SAM3</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="60" title="Delete">&#128465;</a>
+    <form id="del-60" method="post" action="/entries/60/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="61" data-original="Sent [Dave Coleman](mailto:dave@picknik.ai)another draft gif for automasking with small edits">Sent <a href="mailto:dave@picknik.ai">Dave Coleman</a>another draft gif for automasking with small edits</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="61" title="Delete">&#128465;</a>
+    <form id="del-61" method="post" action="/entries/61/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="62" data-original="Fixed up automask PR to example\_ws and got them merged.">Fixed up automask PR to example_ws and got them merged.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="62" title="Delete">&#128465;</a>
+    <form id="del-62" method="post" action="/entries/62/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Dec 17, 2025</h3><ul><li>
+  <span class="entry-text" data-id="53" data-original="Mario says that [https://github.com/PickNikRobotics/moveit\_pro/pull/15794](https://github.com/PickNikRobotics/moveit_pro/pull/15794) was written partially by claude but he has the chat window open and peer programs with it for every PR">Mario says that <a href="https://github.com/PickNikRobotics/moveit_pro/pull/15794">https://github.com/PickNikRobotics/moveit_pro/pull/15794</a> was written partially by claude but he has the chat window open and peer programs with it for every PR</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="53" title="Delete">&#128465;</a>
+    <form id="del-53" method="post" action="/entries/53/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="54" data-original="Quarterly retro">Quarterly retro</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="54" title="Delete">&#128465;</a>
+    <form id="del-54" method="post" action="/entries/54/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="55" data-original="Attended tech talk">Attended tech talk</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="55" title="Delete">&#128465;</a>
+    <form id="del-55" method="post" action="/entries/55/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="56" data-original="Attending capacity planning meeting">Attending capacity planning meeting</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="56" title="Delete">&#128465;</a>
+    <form id="del-56" method="post" action="/entries/56/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="57" data-original="Sent a revised video to [Dave Coleman](mailto:dave@picknik.ai) for the automasking and updated the objective.">Sent a revised video to <a href="mailto:dave@picknik.ai">Dave Coleman</a> for the automasking and updated the objective.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="57" title="Delete">&#128465;</a>
+    <form id="del-57" method="post" action="/entries/57/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="58" data-original="Updated the objective more to see if automasking can be used for the picking and added some filtering behaviors. Modified the Pick from Left Bin to try and use automasking and added new filter behaviors which work decently well.">Updated the objective more to see if automasking can be used for the picking and added some filtering behaviors. Modified the Pick from Left Bin to try and use automasking and added new filter behaviors which work decently well.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="58" title="Delete">&#128465;</a>
+    <form id="del-58" method="post" action="/entries/58/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Dec 16, 2025</h3><ul><li>
+  <span class="entry-text" data-id="44" data-original="Tested out a couple of AI workflows for generating mesh assets using a combination of Nano Banana Pro, Hitem3d, and SAM3D (online)">Tested out a couple of AI workflows for generating mesh assets using a combination of Nano Banana Pro, Hitem3d, and SAM3D (online)</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="44" title="Delete">&#128465;</a>
+    <form id="del-44" method="post" action="/entries/44/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="45" data-original="Standup">Standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="45" title="Delete">&#128465;</a>
+    <form id="del-45" method="post" action="/entries/45/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="46" data-original="Product roadmap meeting">Product roadmap meeting</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="46" title="Delete">&#128465;</a>
+    <form id="del-46" method="post" action="/entries/46/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="47" data-original="Reviewed [Josh Whitley](mailto:josh.whitley@picknik.ai)’s “Skip CI jobs if no change” PR">Reviewed <a href="mailto:josh.whitley@picknik.ai">Josh Whitley</a>’s “Skip CI jobs if no change” PR</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="47" title="Delete">&#128465;</a>
+    <form id="del-47" method="post" action="/entries/47/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="48" data-original="Accepted my sonar cloud issues related to merging 8.10 into main">Accepted my sonar cloud issues related to merging 8.10 into main</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="48" title="Delete">&#128465;</a>
+    <form id="del-48" method="post" action="/entries/48/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="49" data-original="Helped [Josh Whitley](mailto:josh.whitley@picknik.ai)test a different nvidia pr">Helped <a href="mailto:josh.whitley@picknik.ai">Josh Whitley</a>test a different nvidia pr</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="49" title="Delete">&#128465;</a>
+    <form id="del-49" method="post" action="/entries/49/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="50" data-original="Submitted PR to example workspace for automasking">Submitted PR to example workspace for automasking</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="50" title="Delete">&#128465;</a>
+    <form id="del-50" method="post" action="/entries/50/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="51" data-original="Sent video to [Dave Coleman](mailto:dave@picknik.ai)">Sent video to <a href="mailto:dave@picknik.ai">Dave Coleman</a></span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="51" title="Delete">&#128465;</a>
+    <form id="del-51" method="post" action="/entries/51/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="52" data-original="Responded to too too many messages">Responded to too too many messages</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="52" title="Delete">&#128465;</a>
+    <form id="del-52" method="post" action="/entries/52/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Dec 15, 2025</h3><ul><li>
+  <span class="entry-text" data-id="35" data-original="Reviewed [Mario Prats](mailto:mario.prats@picknik.ai)’s fix ACM PR for virtual objects">Reviewed <a href="mailto:mario.prats@picknik.ai">Mario Prats</a>’s fix ACM PR for virtual objects</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="35" title="Delete">&#128465;</a>
+    <form id="del-35" method="post" action="/entries/35/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="36" data-original="Ran standup">Ran standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="36" title="Delete">&#128465;</a>
+    <form id="del-36" method="post" action="/entries/36/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="37" data-original="Had short design discussion on a feature request for overriding core objectives">Had short design discussion on a feature request for overriding core objectives</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="37" title="Delete">&#128465;</a>
+    <form id="del-37" method="post" action="/entries/37/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="38" data-original="Ported pose jog test flake to v8.10">Ported pose jog test flake to v8.10</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="38" title="Delete">&#128465;</a>
+    <form id="del-38" method="post" action="/entries/38/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="39" data-original="1-on1 with with [Richard Pratt](mailto:richard.pratt@picknik.ai)">1-on1 with with <a href="mailto:richard.pratt@picknik.ai">Richard Pratt</a></span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="39" title="Delete">&#128465;</a>
+    <form id="del-39" method="post" action="/entries/39/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="40" data-original="Had design meeting with [David Sobek](mailto:david.sobek@picknik.ai)on ML refactor">Had design meeting with <a href="mailto:david.sobek@picknik.ai">David Sobek</a>on ML refactor</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="40" title="Delete">&#128465;</a>
+    <form id="del-40" method="post" action="/entries/40/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="41" data-original="Had C++ mentoring project meeting with [Kristen Such](mailto:kristen.such@picknik.ai)">Had C++ mentoring project meeting with <a href="mailto:kristen.such@picknik.ai">Kristen Such</a></span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="41" title="Delete">&#128465;</a>
+    <form id="del-41" method="post" action="/entries/41/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="42" data-original="Colton Bailey interview debrief">Colton Bailey interview debrief</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="42" title="Delete">&#128465;</a>
+    <form id="del-42" method="post" action="/entries/42/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="43" data-original="Tested [Josh Whitley](mailto:josh.whitley@picknik.ai)’s nvidia driver fix PR">Tested <a href="mailto:josh.whitley@picknik.ai">Josh Whitley</a>’s nvidia driver fix PR</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="43" title="Delete">&#128465;</a>
+    <form id="del-43" method="post" action="/entries/43/delete" style="display:none"></form>
+  </span>
+</li></ul><h2>Week 50, 2025</h2><h3>Dec 12, 2025</h3><ul><li>
+  <span class="entry-text" data-id="27" data-original="Troubleshooting GPU issue/ML objective bug not working">Troubleshooting GPU issue/ML objective bug not working</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="27" title="Delete">&#128465;</a>
+    <form id="del-27" method="post" action="/entries/27/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="28" data-original="[Bilal Gill](mailto:bilal.gill@picknik.ai)used Claude agents to write the typescript in [https://github.com/PickNikRobotics/moveit\_pro/pull/15700](https://github.com/PickNikRobotics/moveit_pro/pull/15700)"><a href="mailto:bilal.gill@picknik.ai">Bilal Gill</a>used Claude agents to write the typescript in <a href="https://github.com/PickNikRobotics/moveit_pro/pull/15700">https://github.com/PickNikRobotics/moveit_pro/pull/15700</a></span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="28" title="Delete">&#128465;</a>
+    <form id="del-28" method="post" action="/entries/28/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="29" data-original="ML Design meeting with [David Sobek](mailto:david.sobek@picknik.ai)">ML Design meeting with <a href="mailto:david.sobek@picknik.ai">David Sobek</a></span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="29" title="Delete">&#128465;</a>
+    <form id="del-29" method="post" action="/entries/29/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="30" data-original="Goals meeting with [Richard Pratt](mailto:richard.pratt@picknik.ai)">Goals meeting with <a href="mailto:richard.pratt@picknik.ai">Richard Pratt</a></span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="30" title="Delete">&#128465;</a>
+    <form id="del-30" method="post" action="/entries/30/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="31" data-original="Started reaching out to people at Fetch Robotics, now that they are shutting down">Started reaching out to people at Fetch Robotics, now that they are shutting down</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="31" title="Delete">&#128465;</a>
+    <form id="del-31" method="post" action="/entries/31/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="32" data-original="Updated “Possible Large GPU breakage” with my details, [Giovanni Remigi](mailto:giovanni.remigi@picknik.ai)’s and extracted some from [Breelyn Styler](mailto:breelyn.styler@picknik.ai)and [Kristen Such](mailto:kristen.such@picknik.ai)">Updated “Possible Large GPU breakage” with my details, <a href="mailto:giovanni.remigi@picknik.ai">Giovanni Remigi</a>’s and extracted some from <a href="mailto:breelyn.styler@picknik.ai">Breelyn Styler</a>and <a href="mailto:kristen.such@picknik.ai">Kristen Such</a></span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="32" title="Delete">&#128465;</a>
+    <form id="del-32" method="post" action="/entries/32/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="33" data-original="Met with NASA Affordances Phase IIe PI, Jose Benavides, and presented on current progress with automasking and SAM3">Met with NASA Affordances Phase IIe PI, Jose Benavides, and presented on current progress with automasking and SAM3</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="33" title="Delete">&#128465;</a>
+    <form id="del-33" method="post" action="/entries/33/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="34" data-original="Reviewed [Josh Whitley](mailto:josh.whitley@picknik.ai)’s draft “Skip CI jobs if no change” PR.">Reviewed <a href="mailto:josh.whitley@picknik.ai">Josh Whitley</a>’s draft “Skip CI jobs if no change” PR.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="34" title="Delete">&#128465;</a>
+    <form id="del-34" method="post" action="/entries/34/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Dec 11, 2025</h3><ul><li>
+  <span class="entry-text" data-id="20" data-original="Standup">Standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="20" title="Delete">&#128465;</a>
+    <form id="del-20" method="post" action="/entries/20/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="21" data-original="Tested ML inference on workstation again">Tested ML inference on workstation again</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="21" title="Delete">&#128465;</a>
+    <form id="del-21" method="post" action="/entries/21/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="22" data-original="Met with [Josh Whitley](mailto:josh.whitley@picknik.ai) on workstation nvidia driver discrepancy">Met with <a href="mailto:josh.whitley@picknik.ai">Josh Whitley</a> on workstation nvidia driver discrepancy</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="22" title="Delete">&#128465;</a>
+    <form id="del-22" method="post" action="/entries/22/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="23" data-original="Monthly meeting">Monthly meeting</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="23" title="Delete">&#128465;</a>
+    <form id="del-23" method="post" action="/entries/23/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="24" data-original="Removed high resolution test from pr">Removed high resolution test from pr</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="24" title="Delete">&#128465;</a>
+    <form id="del-24" method="post" action="/entries/24/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="25" data-original="Met with Kristen about mentorship. Decided on a weekly Monday meeting using her chess bot as a project to work on.">Met with Kristen about mentorship. Decided on a weekly Monday meeting using her chess bot as a project to work on.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="25" title="Delete">&#128465;</a>
+    <form id="del-25" method="post" action="/entries/25/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="26" data-original="Troubleshot ML issues with Breelyn and [https://github.com/PickNikRobotics/moveit\_pro/issues/15678](https://github.com/PickNikRobotics/moveit_pro/issues/15678)">Troubleshot ML issues with Breelyn and <a href="https://github.com/PickNikRobotics/moveit_pro/issues/15678">https://github.com/PickNikRobotics/moveit_pro/issues/15678</a></span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="26" title="Delete">&#128465;</a>
+    <form id="del-26" method="post" action="/entries/26/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Dec 10, 2025</h3><ul><li>
+  <span class="entry-text" data-id="9" data-original="Standup">Standup</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="9" title="Delete">&#128465;</a>
+    <form id="del-9" method="post" action="/entries/9/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="10" data-original="Responded to Jose about rescheduling, moved to later in the day">Responded to Jose about rescheduling, moved to later in the day</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="10" title="Delete">&#128465;</a>
+    <form id="del-10" method="post" action="/entries/10/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="11" data-original="Checked out Mike’s log level bug">Checked out Mike’s log level bug</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="11" title="Delete">&#128465;</a>
+    <form id="del-11" method="post" action="/entries/11/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="12" data-original="Extending the timeout on my failing Real Image Validation test and started a conversation about if that would be removed or CI adjusted somehow?">Extending the timeout on my failing Real Image Validation test and started a conversation about if that would be removed or CI adjusted somehow?</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="12" title="Delete">&#128465;</a>
+    <form id="del-12" method="post" action="/entries/12/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="13" data-original="Weeding meeting">Weeding meeting</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="13" title="Delete">&#128465;</a>
+    <form id="del-13" method="post" action="/entries/13/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="14" data-original="Engineering Bi-Weekly meeting">Engineering Bi-Weekly meeting</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="14" title="Delete">&#128465;</a>
+    <form id="del-14" method="post" action="/entries/14/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="15" data-original="Virtual coffee">Virtual coffee</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="15" title="Delete">&#128465;</a>
+    <form id="del-15" method="post" action="/entries/15/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="16" data-original="Fixed up pull request to add cmake flag for high resolution sam2 automasking image test">Fixed up pull request to add cmake flag for high resolution sam2 automasking image test</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="16" title="Delete">&#128465;</a>
+    <form id="del-16" method="post" action="/entries/16/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="17" data-original="Updated “MoveIt Pro Technical Specifications Sheet” to include current ML features">Updated “MoveIt Pro Technical Specifications Sheet” to include current ML features</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="17" title="Delete">&#128465;</a>
+    <form id="del-17" method="post" action="/entries/17/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="18" data-original="Check `lab_sim` vs `mock_sim` VRAM usage as an indicator of how much VRAM mujoco uses">Check <code>lab_sim</code> vs <code>mock_sim</code> VRAM usage as an indicator of how much VRAM mujoco uses</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="18" title="Delete">&#128465;</a>
+    <form id="del-18" method="post" action="/entries/18/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="19" data-original="Met with [Ivan Rulik](mailto:ivan@lightspeed.build)from Lightspeed to talk about Nav2, spent most of the time talking about ML features in Pro and upcoming ML features. Scheduled another meeting to focus on Nav2. Learned about their Dex platform that they are building which is an AMR with two cobot arms for wiring a house.">Met with <a href="mailto:ivan@lightspeed.build">Ivan Rulik</a>from Lightspeed to talk about Nav2, spent most of the time talking about ML features in Pro and upcoming ML features. Scheduled another meeting to focus on Nav2. Learned about their Dex platform that they are building which is an AMR with two cobot arms for wiring a house.</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="19" title="Delete">&#128465;</a>
+    <form id="del-19" method="post" action="/entries/19/delete" style="display:none"></form>
+  </span>
+</li></ul><h3>Dec 9, 2025</h3><ul><li>
+  <span class="entry-text" data-id="1" data-original="Made QA assignment list">Made QA assignment list</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="1" title="Delete">&#128465;</a>
+    <form id="del-1" method="post" action="/entries/1/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="2" data-original="Sprint balancing meeting">Sprint balancing meeting</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="2" title="Delete">&#128465;</a>
+    <form id="del-2" method="post" action="/entries/2/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="3" data-original="Started heaptrack analysis for memory leak bug">Started heaptrack analysis for memory leak bug</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="3" title="Delete">&#128465;</a>
+    <form id="del-3" method="post" action="/entries/3/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="4" data-original="Addressed sonarcloud issues on final automask pr">Addressed sonarcloud issues on final automask pr</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="4" title="Delete">&#128465;</a>
+    <form id="del-4" method="post" action="/entries/4/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="5" data-original="Scheduled meeting with Lightspeed to talk about nav2 opportunities">Scheduled meeting with Lightspeed to talk about nav2 opportunities</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="5" title="Delete">&#128465;</a>
+    <form id="del-5" method="post" action="/entries/5/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="6" data-original="Picked up new System 76 desktop">Picked up new System 76 desktop</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="6" title="Delete">&#128465;</a>
+    <form id="del-6" method="post" action="/entries/6/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="7" data-original="Addresses PR feedback for SAM2 automasking behavior">Addresses PR feedback for SAM2 automasking behavior</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="7" title="Delete">&#128465;</a>
+    <form id="del-7" method="post" action="/entries/7/delete" style="display:none"></form>
+  </span>
+</li><li>
+  <span class="entry-text" data-id="8" data-original="Started scheduling meeting with Affordances Phase IIe PI">Started scheduling meeting with Affordances Phase IIe PI</span>
+  <span class="entry-actions">
+    <a href="#" class="delete-btn" data-id="8" title="Delete">&#128465;</a>
+    <form id="del-8" method="post" action="/entries/8/delete" style="display:none"></form>
+  </span>
+</li></ul>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Click to edit — replace rendered HTML with a textarea
+  document.querySelectorAll('.entry-text').forEach(el => {
+    el.addEventListener('click', () => {
+      if (el.querySelector('textarea')) return;
+      const original = el.dataset.original;
+      const ta = document.createElement('textarea');
+      ta.className = 'entry-edit-area';
+      ta.value = original;
+      ta.dataset.id = el.dataset.id;
+      el._savedHtml = el.innerHTML;
+      el.innerHTML = '';
+      el.style.border = 'none';
+      el.appendChild(ta);
+      ta.focus();
+      ta.setSelectionRange(ta.value.length, ta.value.length);
+      // Auto-size to content
+      ta.style.height = ta.scrollHeight + 'px';
+    });
+  });
+
+  // Save on Ctrl+Enter, cancel on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName !== 'TEXTAREA' || !e.target.classList.contains('entry-edit-area')) return;
+    const ta = e.target;
+    const span = ta.parentElement;
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      ta.blur();
+    } else if (e.key === 'Escape') {
+      span.innerHTML = span._savedHtml;
+      span.style.border = '';
+    }
+  });
+
+  // Save on blur
+  document.addEventListener('focusout', (e) => {
+    const ta = e.target;
+    if (ta.tagName !== 'TEXTAREA' || !ta.classList.contains('entry-edit-area')) return;
+    const span = ta.parentElement;
+    if (!span) return;
+    const newText = ta.value.trim();
+    const original = span.dataset.original;
+    if (newText === original) {
+      span.innerHTML = span._savedHtml;
+      span.style.border = '';
+      return;
+    }
+    fetch('/entries/' + span.dataset.id, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({item_text: newText})
+    }).then(r => { if (r.ok) location.reload(); });
+  });
+
+  // Delete on trash click
+  document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (!confirm('Delete this entry?')) return;
+      const id = btn.dataset.id;
+      fetch('/entries/' + id + '/delete', {method: 'POST'})
+        .then(r => { if (r.ok) location.reload(); });
+    });
+  });
+});
+</script>
+</body>
+</html>
