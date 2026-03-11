@@ -188,6 +188,19 @@ pub fn delete_entry(conn: &Connection, id: i64) -> Result<()> {
     Ok(())
 }
 
+/// Update the sort_order of an existing entry.
+pub fn update_sort_order(conn: &Connection, id: i64, sort_order: i32) -> Result<()> {
+    let rows_changed = conn
+        .execute(
+            "UPDATE entries SET sort_order = ?1 WHERE id = ?2",
+            params![sort_order, id],
+        )
+        .context("updating sort_order")?;
+
+    anyhow::ensure!(rows_changed == 1, "entry with id {id} not found");
+    Ok(())
+}
+
 /// Return the highest sort_order for `date`, or -1 if the date has no entries.
 ///
 /// Callers can use `get_max_sort_order(conn, date)? + 1` to compute the
@@ -469,6 +482,30 @@ mod tests {
 
         let max = get_max_sort_order(&conn, date(2026, 3, 9)).unwrap();
         assert_eq!(max, 2, "should return highest sort_order present");
+    }
+
+    #[test]
+    fn test_update_sort_order() {
+        let conn = open_memory_db();
+        insert_entry(&conn, date(2026, 3, 9), "Item A", 0).unwrap();
+        insert_entry(&conn, date(2026, 3, 9), "Item B", 1).unwrap();
+
+        let all = get_all_entries(&conn).unwrap();
+        let id_a = all[0].id;
+        let id_b = all[1].id;
+
+        update_sort_order(&conn, id_a, 1).unwrap();
+        update_sort_order(&conn, id_b, 0).unwrap();
+
+        let reordered = get_all_entries(&conn).unwrap();
+        assert_eq!(
+            reordered[0].item_text, "Item B",
+            "B should be first after reorder"
+        );
+        assert_eq!(
+            reordered[1].item_text, "Item A",
+            "A should be second after reorder"
+        );
     }
 
     #[test]

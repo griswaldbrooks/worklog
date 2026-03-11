@@ -13,7 +13,7 @@ use axum::{
 use chrono::{Datelike, IsoWeek, Local, NaiveDate};
 use db::{
     delete_entry, export_to_worklog, get_all_entries, get_entry_by_id, get_max_sort_order,
-    import_from_worklog, init_db, insert_entry, update_entry,
+    import_from_worklog, init_db, insert_entry, update_entry, update_sort_order,
 };
 use parser::{DayEntry, WeekEntry, WorkLog, parse_worklog};
 use rusqlite::Connection;
@@ -29,6 +29,7 @@ use writer::write_worklog;
 #[derive(Clone)]
 struct AppState {
     conn: Arc<Mutex<Connection>>,
+    display_name: String,
 }
 
 // ---------------------------------------------------------------------------
@@ -67,15 +68,15 @@ async fn index(State(state): State<AppState>) -> RouteResult<Html<String>> {
     let all_entries = get_all_entries(&conn).context("querying all entries")?;
     drop(conn);
 
-    Ok(Html(render_index(&all_entries)))
+    Ok(Html(render_index(&all_entries, &state.display_name)))
 }
 
 /// GET `/new` — show the entry form.
-async fn new_entry_form() -> Html<String> {
+async fn new_entry_form(State(state): State<AppState>) -> Html<String> {
     let today = Local::now().date_naive();
     // Display date pre-filled in the canonical worklog format.
     let today_str = today.format("%b %-d, %Y").to_string();
-    Html(render_new_form(&today_str))
+    Html(render_new_form(&today_str, &state.display_name))
 }
 
 /// Form payload sent by POST `/entries`.
@@ -125,6 +126,24 @@ async fn update_entry_handler(
         .context("querying entry")?
         .ok_or_else(|| AppError(anyhow::anyhow!("Entry {id} not found")))?;
     update_entry(&conn, id, entry.date, &payload.item_text).context("updating entry")?;
+    drop(conn);
+    Ok((StatusCode::OK, "ok"))
+}
+
+/// JSON payload sent by POST `/entries/{id}/reorder`.
+#[derive(Deserialize)]
+struct ReorderForm {
+    sort_order: i32,
+}
+
+/// POST `/entries/{id}/reorder` — update an entry's sort_order via JSON.
+async fn reorder_entry_handler(
+    State(state): State<AppState>,
+    Path(id): Path<i64>,
+    axum::Json(payload): axum::Json<ReorderForm>,
+) -> RouteResult<(StatusCode, &'static str)> {
+    let conn = state.conn.lock().await;
+    update_sort_order(&conn, id, payload.sort_order).context("reordering entry")?;
     drop(conn);
     Ok((StatusCode::OK, "ok"))
 }
@@ -298,12 +317,16 @@ const STYLES: &str = r#"
     li:hover .entry-actions {
         visibility: visible;
     }
+    li[draggable="true"] { cursor: grab; }
+    li[draggable="true"]:active { cursor: grabbing; }
+    li.dragging { opacity: 0.4; }
+    li.drag-over { border-top: 2px solid #2563eb; padding-top: 0; }
 "#;
 
 /// Render the index page by grouping `EntryRow`s inline, preserving IDs for
 /// edit/delete links. The `entries_to_worklog` helper is kept separately for
 /// the export route which needs the `WorkLog` type.
-fn render_index(entries: &[db::EntryRow]) -> String {
+fn render_index(entries: &[db::EntryRow], display_name: &str) -> String {
     // Group rows into (week_number, iso_year) → [(date, id, item_text)] buckets
     // while preserving the incoming newest-first ordering.
     struct WeekBucket {
@@ -357,7 +380,8 @@ fn render_index(entries: &[db::EntryRow]) -> String {
 
     let mut body = String::new();
 
-    body.push_str(r#"<h1>worklog</h1>"#);
+    let escaped_name = html_escape(display_name);
+    body.push_str(&format!(r#"<h1>{escaped_name}</h1>"#));
     body.push_str(
         r#"<p><a href="/new" class="button">+ New Entry</a>&nbsp;<a href="/export" class="button" style="background:#6b7280;">Export Markdown</a></p>"#,
     );
@@ -384,7 +408,7 @@ fn render_index(entries: &[db::EntryRow]) -> String {
                     let raw_escaped = html_escape(item_text_raw);
                     let rendered = render_markdown(item_text_raw);
                     body.push_str(&format!(
-                        r##"<li>
+                        r##"<li draggable="true" data-id="{id}">
   <span class="entry-text" data-id="{id}" data-original="{raw_escaped}">{rendered}</span>
   <span class="entry-actions">
     <a href="#" class="delete-btn" data-id="{id}" title="Delete">&#128465;</a>
@@ -398,10 +422,10 @@ fn render_index(entries: &[db::EntryRow]) -> String {
         }
     }
 
-    wrap_html("worklog", &body)
+    wrap_html(display_name, &body)
 }
 
-fn render_new_form(today_str: &str) -> String {
+fn render_new_form(today_str: &str, display_name: &str) -> String {
     let escaped_date = html_escape(today_str);
     let body = format!(
         r#"
@@ -422,7 +446,7 @@ fn render_new_form(today_str: &str) -> String {
 </form>
 "#
     );
-    wrap_html("New Entry — worklog", &body)
+    wrap_html(&format!("New Entry — {display_name}"), &body)
 }
 
 /// Wrap page content in a minimal but complete HTML document, including the
@@ -434,6 +458,7 @@ fn wrap_html(title: &str, body: &str) -> String {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
 <title>{title}</title>
 <style>{STYLES}</style>
 </head>
@@ -493,6 +518,50 @@ document.addEventListener('DOMContentLoaded', () => {{
       headers: {{'Content-Type': 'application/json'}},
       body: JSON.stringify({{item_text: newText}})
     }}).then(r => {{ if (r.ok) location.reload(); }});
+  }});
+
+  // Drag-to-reorder entries within a day
+  let dragSrc = null;
+  document.querySelectorAll('li[draggable="true"]').forEach(li => {{
+    li.addEventListener('dragstart', (e) => {{
+      dragSrc = li;
+      li.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    }});
+    li.addEventListener('dragend', () => {{
+      li.classList.remove('dragging');
+      document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+      dragSrc = null;
+    }});
+    li.addEventListener('dragover', (e) => {{
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (li !== dragSrc && li.parentElement === dragSrc?.parentElement) {{
+        li.classList.add('drag-over');
+      }}
+    }});
+    li.addEventListener('dragleave', () => {{
+      li.classList.remove('drag-over');
+    }});
+    li.addEventListener('drop', (e) => {{
+      e.preventDefault();
+      li.classList.remove('drag-over');
+      if (!dragSrc || dragSrc === li) return;
+      const ul = li.parentElement;
+      if (ul !== dragSrc.parentElement) return;
+      // Insert dragged item before the drop target
+      ul.insertBefore(dragSrc, li);
+      // Send new sort_order for all items in this list
+      const items = ul.querySelectorAll('li[draggable="true"]');
+      items.forEach((item, idx) => {{
+        const id = item.dataset.id;
+        fetch('/entries/' + id + '/reorder', {{
+          method: 'POST',
+          headers: {{'Content-Type': 'application/json'}},
+          body: JSON.stringify({{sort_order: idx}})
+        }});
+      }});
+    }});
   }});
 
   // Delete on trash click
@@ -609,8 +678,12 @@ async fn main() -> anyhow::Result<()> {
         }
     }
 
+    let display_name =
+        std::env::var("WORKLOG_DISPLAY_NAME").unwrap_or_else(|_| "worklog".to_string());
+
     let state = AppState {
         conn: Arc::new(Mutex::new(conn)),
+        display_name,
     };
 
     let app = Router::new()
@@ -619,6 +692,7 @@ async fn main() -> anyhow::Result<()> {
         .route("/entries", post(add_entry))
         .route("/entries/{id}", post(update_entry_handler))
         .route("/entries/{id}/delete", post(delete_entry_handler))
+        .route("/entries/{id}/reorder", post(reorder_entry_handler))
         .route("/export", get(export_markdown))
         .with_state(state);
 
@@ -812,7 +886,7 @@ mod tests {
 
     #[test]
     fn test_render_index_empty_log_shows_no_entries_message() {
-        let html = render_index(&[]);
+        let html = render_index(&[], "worklog");
         assert!(
             html.contains("No entries yet"),
             "empty log should say 'No entries yet'"
@@ -822,7 +896,7 @@ mod tests {
     #[test]
     fn test_render_index_shows_week_header_with_year() {
         let entries = vec![entry_row(1, date(2026, 3, 9), "Task")];
-        let html = render_index(&entries);
+        let html = render_index(&entries, "worklog");
         assert!(
             html.contains("Week 11"),
             "rendered HTML should contain week header"
@@ -836,7 +910,7 @@ mod tests {
     #[test]
     fn test_render_index_shows_items() {
         let entries = vec![entry_row(1, date(2026, 3, 9), "Attended standup")];
-        let html = render_index(&entries);
+        let html = render_index(&entries, "worklog");
         assert!(
             html.contains("Attended standup"),
             "rendered HTML should contain the work item"
@@ -850,7 +924,7 @@ mod tests {
     #[test]
     fn test_render_index_escapes_html_in_items() {
         let entries = vec![entry_row(1, date(2026, 3, 9), "Fix <bug> & deploy")];
-        let html = render_index(&entries);
+        let html = render_index(&entries, "worklog");
         assert!(
             !html.contains("<bug>"),
             "raw < and > in items must be HTML-escaped by comrak"
@@ -860,7 +934,7 @@ mod tests {
     #[test]
     fn test_render_index_includes_entry_text_class_and_data_id() {
         let entries = vec![entry_row(42, date(2026, 3, 9), "Attended standup")];
-        let html = render_index(&entries);
+        let html = render_index(&entries, "worklog");
         assert!(
             html.contains("class=\"entry-text\""),
             "index should use entry-text class for inline editing: {html}"
@@ -879,7 +953,7 @@ mod tests {
 
     #[test]
     fn test_render_new_form_contains_prefilled_date() {
-        let html = render_new_form("Mar 9, 2026");
+        let html = render_new_form("Mar 9, 2026", "worklog");
         assert!(
             html.contains("Mar 9, 2026"),
             "form should contain the pre-filled date"
@@ -888,10 +962,53 @@ mod tests {
 
     #[test]
     fn test_render_new_form_posts_to_entries() {
-        let html = render_new_form("Mar 9, 2026");
+        let html = render_new_form("Mar 9, 2026", "worklog");
         assert!(
             html.contains(r#"action="/entries""#),
             "form action should post to /entries"
+        );
+    }
+
+    // --- custom display name ---
+
+    #[test]
+    fn test_render_index_uses_custom_display_name() {
+        let html = render_index(&[], "My Work Tracker");
+        assert!(
+            html.contains("My Work Tracker"),
+            "index should show custom display name"
+        );
+    }
+
+    #[test]
+    fn test_render_new_form_uses_custom_display_name() {
+        let html = render_new_form("Mar 9, 2026", "My Tracker");
+        assert!(
+            html.contains("My Tracker"),
+            "new form title should contain custom display name"
+        );
+    }
+
+    // --- favicon ---
+
+    #[test]
+    fn test_wrap_html_includes_favicon() {
+        let html = wrap_html("test", "body");
+        assert!(
+            html.contains(r#"rel="icon""#),
+            "pages should include a favicon link"
+        );
+    }
+
+    // --- draggable ---
+
+    #[test]
+    fn test_render_index_includes_draggable_attribute() {
+        let entries = vec![entry_row(1, date(2026, 3, 9), "Task")];
+        let html = render_index(&entries, "worklog");
+        assert!(
+            html.contains(r#"draggable="true""#),
+            "list items should be draggable: {html}"
         );
     }
 }
