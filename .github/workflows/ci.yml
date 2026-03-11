@@ -1,0 +1,100 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check:
+    name: Format & Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Check formatting
+        run: cargo fmt --check
+
+      - name: Clippy
+        run: cargo clippy --all-features -- -D warnings
+
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: check
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Run unit tests
+        run: cargo test --lib
+
+  sonar:
+    name: SonarCloud Analysis
+    runs-on: ubuntu-latest
+    needs: check
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: llvm-tools-preview
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install cargo-llvm-cov
+        uses: taiki-e/install-action@cargo-llvm-cov
+
+      - name: Generate coverage
+        run: cargo llvm-cov --lib --lcov --output-path lcov.info
+
+      - name: Convert LCOV to SonarQube XML
+        run: |
+          python3 << 'PYEOF'
+          with open("lcov.info") as f:
+              lcov = f.read()
+
+          out = ['<coverage version="1">']
+          current_file = None
+          for line in lcov.splitlines():
+              if line.startswith("SF:"):
+                  current_file = line[3:]
+                  out.append(f'  <file path="{current_file}">')
+              elif line.startswith("DA:"):
+                  parts = line[3:].split(",")
+                  line_num, hits = parts[0], parts[1]
+                  covered = "true" if int(hits) > 0 else "false"
+                  out.append(f'    <lineToCover lineNumber="{line_num}" covered="{covered}"/>')
+              elif line.startswith("end_of_record"):
+                  if current_file:
+                      out.append("  </file>")
+                      current_file = None
+          out.append("</coverage>")
+
+          with open("sonar-coverage.xml", "w") as f:
+              f.write("\n".join(out) + "\n")
+          PYEOF
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
