@@ -3,6 +3,7 @@ use std::path::Path;
 use anyhow::{Context, Result};
 use chrono::{Datelike, IsoWeek, NaiveDate};
 use rusqlite::{Connection, params};
+use serde::Serialize;
 
 use crate::parser::{DayEntry, WeekEntry, WorkLog};
 
@@ -14,6 +15,16 @@ pub struct EntryRow {
     pub item_text: String,
     pub created_at: String,
     pub sort_order: i32,
+}
+
+/// A single row from the `contacts` table.
+#[derive(Debug, Clone, PartialEq, Serialize)]
+pub struct ContactRow {
+    pub id: i64,
+    pub handle: String,
+    pub full_name: String,
+    pub email: String,
+    pub created_at: String,
 }
 
 /// Open (or create) the SQLite database at `path` and ensure the schema exists.
@@ -29,11 +40,127 @@ pub fn init_db(path: &Path) -> Result<Connection> {
             created_at  TEXT    NOT NULL DEFAULT (datetime('now')),
             sort_order  INTEGER NOT NULL DEFAULT 0
         );
-        CREATE INDEX IF NOT EXISTS idx_entries_date ON entries(date);",
+        CREATE INDEX IF NOT EXISTS idx_entries_date ON entries(date);
+        CREATE TABLE IF NOT EXISTS contacts (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            handle     TEXT    NOT NULL UNIQUE,
+            full_name  TEXT    NOT NULL,
+            email      TEXT    NOT NULL,
+            created_at TEXT    NOT NULL DEFAULT (datetime('now'))
+        );",
     )
     .context("creating schema")?;
 
     Ok(conn)
+}
+
+/// Insert a new contact.
+pub fn insert_contact(conn: &Connection, handle: &str, full_name: &str, email: &str) -> Result<()> {
+    conn.execute(
+        "INSERT INTO contacts (handle, full_name, email) VALUES (?1, ?2, ?3)",
+        params![handle, full_name, email],
+    )
+    .context("inserting contact")?;
+    Ok(())
+}
+
+/// Return all contacts ordered by handle ascending.
+pub fn get_all_contacts(conn: &Connection) -> Result<Vec<ContactRow>> {
+    let mut stmt = conn.prepare(
+        "SELECT id, handle, full_name, email, created_at FROM contacts ORDER BY handle ASC",
+    )?;
+
+    let rows = stmt
+        .query_map([], |row| {
+            Ok(ContactRow {
+                id: row.get(0)?,
+                handle: row.get(1)?,
+                full_name: row.get(2)?,
+                email: row.get(3)?,
+                created_at: row.get(4)?,
+            })
+        })?
+        .map(|r| r.context("reading contact row"))
+        .collect::<Result<Vec<_>>>()?;
+
+    Ok(rows)
+}
+
+/// Fetch a single contact by its primary key.
+///
+/// Returns `None` if no row with that id exists.
+#[allow(dead_code)]
+pub fn get_contact_by_id(conn: &Connection, id: i64) -> Result<Option<ContactRow>> {
+    let mut stmt = conn
+        .prepare("SELECT id, handle, full_name, email, created_at FROM contacts WHERE id = ?1")?;
+
+    let mut rows = stmt
+        .query_map(params![id], |row| {
+            Ok(ContactRow {
+                id: row.get(0)?,
+                handle: row.get(1)?,
+                full_name: row.get(2)?,
+                email: row.get(3)?,
+                created_at: row.get(4)?,
+            })
+        })?
+        .map(|r| r.context("reading contact row"));
+
+    rows.next().transpose()
+}
+
+/// Fetch a single contact by handle (case-insensitive).
+///
+/// Returns `None` if no matching contact exists.
+// Exported for future callers; currently exercised only by tests.
+#[allow(dead_code)]
+pub fn get_contact_by_handle(conn: &Connection, handle: &str) -> Result<Option<ContactRow>> {
+    let mut stmt = conn.prepare(
+        "SELECT id, handle, full_name, email, created_at FROM contacts WHERE lower(handle) = lower(?1)",
+    )?;
+
+    let mut rows = stmt
+        .query_map(params![handle], |row| {
+            Ok(ContactRow {
+                id: row.get(0)?,
+                handle: row.get(1)?,
+                full_name: row.get(2)?,
+                email: row.get(3)?,
+                created_at: row.get(4)?,
+            })
+        })?
+        .map(|r| r.context("reading contact row"));
+
+    rows.next().transpose()
+}
+
+/// Update an existing contact's handle, full name, and email.
+pub fn update_contact(
+    conn: &Connection,
+    id: i64,
+    handle: &str,
+    full_name: &str,
+    email: &str,
+) -> Result<()> {
+    let rows_changed = conn
+        .execute(
+            "UPDATE contacts SET handle = ?1, full_name = ?2, email = ?3 WHERE id = ?4",
+            params![handle, full_name, email, id],
+        )
+        .context("updating contact")?;
+
+    anyhow::ensure!(rows_changed == 1, "contact with id {id} not found");
+    Ok(())
+}
+
+/// Delete a contact by its primary key.
+pub fn delete_contact(conn: &Connection, id: i64) -> Result<()> {
+    let rows_changed = conn
+        .execute("DELETE FROM contacts WHERE id = ?1", params![id])
+        .context("deleting contact")?;
+
+    anyhow::ensure!(rows_changed == 1, "contact with id {id} not found");
+    Ok(())
 }
 
 /// Insert one bullet item for `date` at the given `sort_order` position.
@@ -329,7 +456,14 @@ mod tests {
                 created_at  TEXT    NOT NULL DEFAULT (datetime('now')),
                 sort_order  INTEGER NOT NULL DEFAULT 0
             );
-            CREATE INDEX IF NOT EXISTS idx_entries_date ON entries(date);",
+            CREATE INDEX IF NOT EXISTS idx_entries_date ON entries(date);
+            CREATE TABLE IF NOT EXISTS contacts (
+                id         INTEGER PRIMARY KEY AUTOINCREMENT,
+                handle     TEXT    NOT NULL UNIQUE,
+                full_name  TEXT    NOT NULL,
+                email      TEXT    NOT NULL,
+                created_at TEXT    NOT NULL DEFAULT (datetime('now'))
+            );",
         )
         .unwrap();
         conn
@@ -414,6 +548,13 @@ mod tests {
             .query_row("SELECT COUNT(*) FROM entries", [], |r| r.get(0))
             .unwrap();
         assert_eq!(count, 1, "entries table should exist and accept rows");
+
+        // Verify the contacts table also exists.
+        conn.execute(
+            "INSERT INTO contacts (handle, full_name, email) VALUES ('test', 'Test User', 'test@example.com')",
+            [],
+        )
+        .expect("contacts table should exist after init_db");
 
         let _ = std::fs::remove_file(&db_path);
     }
@@ -572,6 +713,125 @@ mod tests {
         assert_eq!(worklog.weeks[0].days.len(), 2);
         assert_eq!(worklog.weeks[1].week_number, 10);
         assert_eq!(worklog.weeks[1].days.len(), 1);
+    }
+
+    // --- contacts CRUD ---
+
+    #[test]
+    fn test_get_all_contacts_empty() {
+        let conn = open_memory_db();
+        let contacts = get_all_contacts(&conn).unwrap();
+        assert!(contacts.is_empty(), "fresh db should have no contacts");
+    }
+
+    #[test]
+    fn test_get_contact_by_id_not_found() {
+        let conn = open_memory_db();
+        let result = get_contact_by_id(&conn, 9999).unwrap();
+        assert!(result.is_none(), "missing id should return None");
+    }
+
+    #[test]
+    fn test_get_contact_by_handle_not_found() {
+        let conn = open_memory_db();
+        let result = get_contact_by_handle(&conn, "nobody").unwrap();
+        assert!(result.is_none(), "unknown handle should return None");
+    }
+
+    #[test]
+    fn test_insert_and_retrieve_contact() {
+        let conn = open_memory_db();
+        insert_contact(&conn, "alice", "Alice Smith", "alice@example.com").unwrap();
+
+        let contacts = get_all_contacts(&conn).unwrap();
+        assert_eq!(contacts.len(), 1, "should have one contact");
+        assert_eq!(contacts[0].handle, "alice");
+        assert_eq!(contacts[0].full_name, "Alice Smith");
+        assert_eq!(contacts[0].email, "alice@example.com");
+    }
+
+    #[test]
+    fn test_get_contact_by_id_found() {
+        let conn = open_memory_db();
+        insert_contact(&conn, "bob", "Bob Jones", "bob@example.com").unwrap();
+        let all = get_all_contacts(&conn).unwrap();
+        let id = all[0].id;
+
+        let contact = get_contact_by_id(&conn, id)
+            .unwrap()
+            .expect("contact should be found by id");
+        assert_eq!(contact.handle, "bob");
+        assert_eq!(contact.full_name, "Bob Jones");
+    }
+
+    #[test]
+    fn test_get_contact_by_handle_found() {
+        let conn = open_memory_db();
+        insert_contact(&conn, "carol", "Carol White", "carol@example.com").unwrap();
+
+        let contact = get_contact_by_handle(&conn, "carol")
+            .unwrap()
+            .expect("contact should be found by handle");
+        assert_eq!(contact.email, "carol@example.com");
+    }
+
+    #[test]
+    fn test_get_contact_by_handle_case_insensitive() {
+        let conn = open_memory_db();
+        insert_contact(&conn, "Dave", "Dave Brown", "dave@example.com").unwrap();
+
+        let contact = get_contact_by_handle(&conn, "dave")
+            .unwrap()
+            .expect("lowercase lookup should find mixed-case handle");
+        assert_eq!(contact.handle, "Dave");
+
+        let contact2 = get_contact_by_handle(&conn, "DAVE")
+            .unwrap()
+            .expect("uppercase lookup should find mixed-case handle");
+        assert_eq!(contact2.handle, "Dave");
+    }
+
+    #[test]
+    fn test_update_contact() {
+        let conn = open_memory_db();
+        insert_contact(&conn, "eve", "Eve Original", "eve@example.com").unwrap();
+        let all = get_all_contacts(&conn).unwrap();
+        let id = all[0].id;
+
+        update_contact(&conn, id, "eve", "Eve Updated", "eve2@example.com").unwrap();
+
+        let updated = get_contact_by_id(&conn, id).unwrap().unwrap();
+        assert_eq!(updated.full_name, "Eve Updated", "full_name should update");
+        assert_eq!(updated.email, "eve2@example.com", "email should update");
+    }
+
+    #[test]
+    fn test_delete_contact() {
+        let conn = open_memory_db();
+        insert_contact(&conn, "frank", "Frank Lee", "frank@example.com").unwrap();
+        let all = get_all_contacts(&conn).unwrap();
+        let id = all[0].id;
+
+        delete_contact(&conn, id).unwrap();
+
+        let result = get_contact_by_id(&conn, id).unwrap();
+        assert!(result.is_none(), "contact should be gone after deletion");
+
+        let remaining = get_all_contacts(&conn).unwrap();
+        assert!(remaining.is_empty(), "no contacts should remain");
+    }
+
+    #[test]
+    fn test_contacts_ordered_by_handle() {
+        let conn = open_memory_db();
+        insert_contact(&conn, "zara", "Zara Z", "z@example.com").unwrap();
+        insert_contact(&conn, "alice", "Alice A", "a@example.com").unwrap();
+        insert_contact(&conn, "mike", "Mike M", "m@example.com").unwrap();
+
+        let contacts = get_all_contacts(&conn).unwrap();
+        assert_eq!(contacts[0].handle, "alice", "should be ordered by handle");
+        assert_eq!(contacts[1].handle, "mike");
+        assert_eq!(contacts[2].handle, "zara");
     }
 
     #[test]

@@ -4,7 +4,7 @@ mod writer;
 
 use anyhow::Context;
 use axum::{
-    Form, Router,
+    Form, Json, Router,
     extract::{Path, State},
     http::StatusCode,
     response::{Html, IntoResponse, Redirect, Response},
@@ -12,12 +12,13 @@ use axum::{
 };
 use chrono::{Datelike, IsoWeek, Local, NaiveDate};
 use db::{
-    delete_entry, export_to_worklog, get_all_entries, get_entry_by_id, get_max_sort_order,
-    import_from_worklog, init_db, insert_entry, update_entry, update_sort_order,
+    ContactRow, delete_contact, delete_entry, export_to_worklog, get_all_contacts, get_all_entries,
+    get_entry_by_id, get_max_sort_order, import_from_worklog, init_db, insert_contact,
+    insert_entry, update_contact, update_entry, update_sort_order,
 };
 use parser::{DayEntry, WeekEntry, WorkLog, parse_worklog};
 use rusqlite::Connection;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::{path::PathBuf, sync::Arc};
 use tokio::sync::Mutex;
 use writer::write_worklog;
@@ -66,9 +67,14 @@ type RouteResult<T> = Result<T, AppError>;
 async fn index(State(state): State<AppState>) -> RouteResult<Html<String>> {
     let conn = state.conn.lock().await;
     let all_entries = get_all_entries(&conn).context("querying all entries")?;
+    let contacts = get_all_contacts(&conn).context("querying contacts")?;
     drop(conn);
 
-    Ok(Html(render_index(&all_entries, &state.display_name)))
+    Ok(Html(render_index(
+        &all_entries,
+        &contacts,
+        &state.display_name,
+    )))
 }
 
 /// GET `/new` — show the entry form.
@@ -159,6 +165,126 @@ async fn delete_entry_handler(
     Ok((StatusCode::OK, "ok"))
 }
 
+/// GET `/contacts` — render the contacts management page.
+async fn contacts_page(State(state): State<AppState>) -> RouteResult<Html<String>> {
+    let conn = state.conn.lock().await;
+    let contacts = get_all_contacts(&conn).context("querying contacts")?;
+    drop(conn);
+    Ok(Html(render_contacts(&contacts, &state.display_name)))
+}
+
+/// Form payload for POST `/contacts`.
+#[derive(Deserialize)]
+struct NewContactForm {
+    handle: String,
+    full_name: String,
+    email: String,
+}
+
+/// POST `/contacts` — add a new contact and redirect back.
+async fn add_contact_handler(
+    State(state): State<AppState>,
+    Form(payload): Form<NewContactForm>,
+) -> RouteResult<Redirect> {
+    let handle = payload.handle.trim().to_string();
+    let full_name = payload.full_name.trim().to_string();
+    let email = payload.email.trim().to_string();
+
+    if handle.is_empty() || full_name.is_empty() {
+        return Ok(Redirect::to("/contacts"));
+    }
+
+    // Only allow alphanumeric, underscore, and hyphen in handles so that
+    // resolve_mentions can reliably match @handle tokens in entry text.
+    if !handle
+        .chars()
+        .all(|c| c.is_alphanumeric() || c == '_' || c == '-')
+    {
+        return Ok(Redirect::to("/contacts"));
+    }
+
+    let conn = state.conn.lock().await;
+    insert_contact(&conn, &handle, &full_name, &email).context("inserting contact")?;
+    drop(conn);
+
+    Ok(Redirect::to("/contacts"))
+}
+
+/// JSON payload for POST `/contacts/{id}`.
+#[derive(Deserialize)]
+struct EditContactForm {
+    handle: String,
+    full_name: String,
+    email: String,
+}
+
+/// POST `/contacts/{id}` — update an existing contact via JSON.
+async fn update_contact_handler(
+    State(state): State<AppState>,
+    Path(id): Path<i64>,
+    Json(payload): Json<EditContactForm>,
+) -> RouteResult<(StatusCode, &'static str)> {
+    let handle = payload.handle.trim();
+    if !handle
+        .chars()
+        .all(|c| c.is_alphanumeric() || c == '_' || c == '-')
+        || handle.is_empty()
+    {
+        return Ok((StatusCode::BAD_REQUEST, "invalid handle"));
+    }
+
+    let conn = state.conn.lock().await;
+    update_contact(
+        &conn,
+        id,
+        handle,
+        payload.full_name.trim(),
+        payload.email.trim(),
+    )
+    .context("updating contact")?;
+    drop(conn);
+    Ok((StatusCode::OK, "ok"))
+}
+
+/// POST `/contacts/{id}/delete` — delete a contact and return plain text "ok".
+async fn delete_contact_handler(
+    State(state): State<AppState>,
+    Path(id): Path<i64>,
+) -> RouteResult<(StatusCode, &'static str)> {
+    let conn = state.conn.lock().await;
+    delete_contact(&conn, id).context("deleting contact")?;
+    drop(conn);
+    Ok((StatusCode::OK, "ok"))
+}
+
+/// Response shape for the contacts API.
+#[derive(Serialize)]
+struct ContactApiItem {
+    id: i64,
+    handle: String,
+    full_name: String,
+    email: String,
+}
+
+/// GET `/api/contacts` — return all contacts as JSON for the autocomplete widget.
+async fn api_contacts(State(state): State<AppState>) -> RouteResult<Json<Vec<ContactApiItem>>> {
+    let conn = state.conn.lock().await;
+    let contacts = get_all_contacts(&conn).context("querying contacts")?;
+    drop(conn);
+
+    let items = contacts
+        .into_iter()
+        .map(|c| ContactApiItem {
+            id: c.id,
+            handle: c.handle,
+            full_name: c.full_name,
+            email: c.email,
+        })
+        .collect();
+
+    Ok(Json(items))
+}
+
 /// GET `/export` — export the full work log as plain-text markdown.
 ///
 /// Useful for copying to Rich or other consumers that expect the canonical
@@ -241,6 +367,38 @@ fn entries_to_worklog(entries: Vec<db::EntryRow>) -> WorkLog {
 // ---------------------------------------------------------------------------
 // HTML rendering
 // ---------------------------------------------------------------------------
+
+const MENTION_STYLES: &str = r#"
+    .mention {
+        background: #e8eaf6;
+        color: #3949ab;
+        padding: 0 4px;
+        border-radius: 3px;
+        font-weight: 500;
+        cursor: default;
+    }
+    .mention-popup {
+        position: absolute;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        max-height: 150px;
+        overflow-y: auto;
+        z-index: 1000;
+        min-width: 180px;
+    }
+    .mention-popup-item {
+        padding: 4px 8px;
+        cursor: pointer;
+        font-size: 0.9rem;
+    }
+    .mention-popup-item:hover, .mention-popup-item.active {
+        background: #e8eaf6;
+    }
+    .mention-popup-item .handle { font-weight: 600; color: #3949ab; }
+    .mention-popup-item .name { color: #666; margin-left: 0.5rem; }
+"#;
 
 const STYLES: &str = r#"
     body {
@@ -326,7 +484,7 @@ const STYLES: &str = r#"
 /// Render the index page by grouping `EntryRow`s inline, preserving IDs for
 /// edit/delete links. The `entries_to_worklog` helper is kept separately for
 /// the export route which needs the `WorkLog` type.
-fn render_index(entries: &[db::EntryRow], display_name: &str) -> String {
+fn render_index(entries: &[db::EntryRow], contacts: &[ContactRow], display_name: &str) -> String {
     // Group rows into (week_number, iso_year) → [(date, id, item_text)] buckets
     // while preserving the incoming newest-first ordering.
     struct WeekBucket {
@@ -383,7 +541,7 @@ fn render_index(entries: &[db::EntryRow], display_name: &str) -> String {
     let escaped_name = html_escape(display_name);
     body.push_str(&format!(r#"<h1>{escaped_name}</h1>"#));
     body.push_str(
-        r#"<p><a href="/new" class="button">+ New Entry</a>&nbsp;<a href="/export" class="button" style="background:#6b7280;">Export Markdown</a></p>"#,
+        r#"<p><a href="/new" class="button">+ New Entry</a>&nbsp;<a href="/export" class="button" style="background:#6b7280;">Export Markdown</a>&nbsp;<a href="/contacts" class="button" style="background:#6b7280;">Contacts</a></p>"#,
     );
 
     if weeks.is_empty() {
@@ -406,7 +564,7 @@ fn render_index(entries: &[db::EntryRow], display_name: &str) -> String {
                 body.push_str("<ul>");
                 for (id, item_text_raw) in &day.items {
                     let raw_escaped = html_escape(item_text_raw);
-                    let rendered = render_markdown(item_text_raw);
+                    let rendered = resolve_mentions(&render_markdown(item_text_raw), contacts);
                     body.push_str(&format!(
                         r##"<li draggable="true" data-id="{id}">
   <span class="entry-text" data-id="{id}" data-original="{raw_escaped}">{rendered}</span>
@@ -460,7 +618,7 @@ fn wrap_html(title: &str, body: &str) -> String {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
 <title>{title}</title>
-<style>{STYLES}</style>
+<style>{STYLES}{MENTION_STYLES}</style>
 </head>
 <body>
 {body}
@@ -574,6 +732,120 @@ document.addEventListener('DOMContentLoaded', () => {{
         .then(r => {{ if (r.ok) location.reload(); }});
     }});
   }});
+
+  // @mention autocomplete for all textareas
+  let mentionContacts = [];
+  fetch('/api/contacts').then(r => r.json()).then(data => {{ mentionContacts = data; }}).catch(() => {{}});
+
+  let mentionPopup = null;
+  let mentionAnchorTA = null;
+  let mentionAtPos = -1;
+  let mentionActiveIdx = -1;
+
+  function closeMentionPopup() {{
+    if (mentionPopup) {{ mentionPopup.remove(); mentionPopup = null; }}
+    mentionAnchorTA = null;
+    mentionAtPos = -1;
+    mentionActiveIdx = -1;
+  }}
+
+  function buildMentionPopup(ta, query) {{
+    closeMentionPopup();
+    const lower = query.toLowerCase();
+    const matches = mentionContacts.filter(c =>
+      c.handle.toLowerCase().startsWith(lower) ||
+      c.full_name.toLowerCase().includes(lower)
+    );
+    if (matches.length === 0) return;
+
+    mentionAnchorTA = ta;
+    mentionActiveIdx = 0;
+
+    mentionPopup = document.createElement('div');
+    mentionPopup.className = 'mention-popup';
+
+    // Position below the textarea (simple approach: below+left of textarea)
+    const rect = ta.getBoundingClientRect();
+    mentionPopup.style.top = (window.scrollY + rect.bottom + 2) + 'px';
+    mentionPopup.style.left = (window.scrollX + rect.left) + 'px';
+
+    matches.forEach((contact, idx) => {{
+      const item = document.createElement('div');
+      item.className = 'mention-popup-item' + (idx === 0 ? ' active' : '');
+      const handleSpan = document.createElement('span');
+      handleSpan.className = 'handle';
+      handleSpan.textContent = '@' + contact.handle;
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'name';
+      nameSpan.textContent = contact.full_name;
+      item.appendChild(handleSpan);
+      item.appendChild(nameSpan);
+      item.addEventListener('mousedown', (e) => {{
+        e.preventDefault();
+        insertMention(ta, contact.handle);
+      }});
+      mentionPopup.appendChild(item);
+    }});
+
+    document.body.appendChild(mentionPopup);
+  }}
+
+  function setMentionActive(idx) {{
+    if (!mentionPopup) return;
+    const items = mentionPopup.querySelectorAll('.mention-popup-item');
+    items.forEach((el, i) => el.classList.toggle('active', i === idx));
+    mentionActiveIdx = idx;
+    if (items[idx]) items[idx].scrollIntoView({{block: 'nearest'}});
+  }}
+
+  function insertMention(ta, handle) {{
+    const val = ta.value;
+    const before = val.substring(0, mentionAtPos);
+    const after = val.substring(ta.selectionStart);
+    ta.value = before + '@' + handle + ' ' + after;
+    const newPos = mentionAtPos + handle.length + 2;
+    ta.setSelectionRange(newPos, newPos);
+    closeMentionPopup();
+  }}
+
+  document.addEventListener('input', (e) => {{
+    const ta = e.target;
+    if (ta.tagName !== 'TEXTAREA') return;
+    const pos = ta.selectionStart;
+    const text = ta.value.substring(0, pos);
+    const atMatch = text.match(/@([\w-]*)$/);
+    if (atMatch) {{
+      mentionAtPos = pos - atMatch[0].length;
+      buildMentionPopup(ta, atMatch[1]);
+    }} else {{
+      closeMentionPopup();
+    }}
+  }});
+
+  document.addEventListener('keydown', (e) => {{
+    if (!mentionPopup) return;
+    const items = mentionPopup.querySelectorAll('.mention-popup-item');
+    if (e.key === 'ArrowDown') {{
+      e.preventDefault();
+      setMentionActive(Math.min(mentionActiveIdx + 1, items.length - 1));
+    }} else if (e.key === 'ArrowUp') {{
+      e.preventDefault();
+      setMentionActive(Math.max(mentionActiveIdx - 1, 0));
+    }} else if (e.key === 'Enter' && mentionAnchorTA) {{
+      const activeItem = mentionPopup.querySelector('.mention-popup-item.active');
+      if (activeItem) {{
+        e.preventDefault();
+        const handle = activeItem.querySelector('.handle').textContent.slice(1);
+        insertMention(mentionAnchorTA, handle);
+      }}
+    }} else if (e.key === 'Escape') {{
+      closeMentionPopup();
+    }}
+  }}, true);
+
+  document.addEventListener('click', (e) => {{
+    if (mentionPopup && !mentionPopup.contains(e.target)) closeMentionPopup();
+  }});
 }});
 </script>
 </body>
@@ -616,6 +888,237 @@ fn render_markdown(s: &str) -> String {
     } else {
         trimmed.to_string()
     }
+}
+
+/// Replace `@handle` tokens in rendered HTML with styled mention spans.
+///
+/// Only handles that exist in `contacts` are replaced; unknown @-words are
+/// left as-is so arbitrary email addresses in entries don't get mangled.
+/// Matching is case-insensitive on the handle.
+fn resolve_mentions(html: &str, contacts: &[ContactRow]) -> String {
+    if contacts.is_empty() {
+        return html.to_string();
+    }
+
+    // Walk the HTML character by character. We only replace @word tokens that
+    // appear outside of HTML tags/attributes (i.e. not inside < … >).
+    let mut result = String::with_capacity(html.len());
+    let chars: Vec<char> = html.chars().collect();
+    let len = chars.len();
+    let mut i = 0;
+
+    while i < len {
+        if chars[i] == '<' {
+            // Copy the entire tag verbatim — don't touch attributes.
+            result.push(chars[i]);
+            i += 1;
+            while i < len {
+                result.push(chars[i]);
+                if chars[i] == '>' {
+                    i += 1;
+                    break;
+                }
+                i += 1;
+            }
+        } else if chars[i] == '@' {
+            // Collect the word following '@'.
+            let start = i + 1;
+            let mut end = start;
+            while end < len
+                && (chars[end].is_alphanumeric() || chars[end] == '_' || chars[end] == '-')
+            {
+                end += 1;
+            }
+
+            if end > start {
+                let word: String = chars[start..end].iter().collect();
+                // Case-insensitive lookup.
+                let lower_word = word.to_lowercase();
+                let matched = contacts
+                    .iter()
+                    .find(|c| c.handle.to_lowercase() == lower_word);
+
+                if let Some(contact) = matched {
+                    let title = html_escape(&format!("{} ({})", contact.full_name, contact.email));
+                    result.push_str(&format!(
+                        r#"<span class="mention" title="{title}">@{}</span>"#,
+                        html_escape(&contact.handle)
+                    ));
+                } else {
+                    // Unknown handle — pass through unchanged.
+                    result.push('@');
+                    result.extend(chars[start..end].iter());
+                }
+                i = end;
+            } else {
+                // '@' not followed by a word character — pass through.
+                result.push('@');
+                i += 1;
+            }
+        } else {
+            result.push(chars[i]);
+            i += 1;
+        }
+    }
+
+    result
+}
+
+/// Render the /contacts management page.
+fn render_contacts(contacts: &[ContactRow], display_name: &str) -> String {
+    let mut body = String::new();
+
+    body.push_str(r#"<h1>Contacts</h1>"#);
+    body.push_str(r#"<p><a href="/" class="button" style="background:#6b7280;">&#8592; Back to worklog</a></p>"#);
+
+    // Add new contact form.
+    body.push_str(
+        r#"<h2>Add Contact</h2>
+<form method="post" action="/contacts">
+  <div class="form-group">
+    <label for="handle">Handle</label>
+    <input type="text" id="handle" name="handle" placeholder="alice" required />
+    <p class="hint">Used as @alice in entries. No @ prefix.</p>
+  </div>
+  <div class="form-group">
+    <label for="full_name">Full Name</label>
+    <input type="text" id="full_name" name="full_name" placeholder="Alice Smith" required />
+  </div>
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="text" id="email" name="email" placeholder="alice@example.com" />
+  </div>
+  <button type="submit">Add Contact</button>
+</form>
+"#,
+    );
+
+    // Contacts table.
+    body.push_str("<h2>All Contacts</h2>");
+
+    if contacts.is_empty() {
+        body.push_str("<p><em>No contacts yet.</em></p>");
+    } else {
+        body.push_str(
+            r#"<table style="width:100%;border-collapse:collapse;">
+<thead>
+<tr>
+  <th style="text-align:left;padding:6px 8px;border-bottom:2px solid #ddd;">Handle</th>
+  <th style="text-align:left;padding:6px 8px;border-bottom:2px solid #ddd;">Full Name</th>
+  <th style="text-align:left;padding:6px 8px;border-bottom:2px solid #ddd;">Email</th>
+  <th style="padding:6px 8px;border-bottom:2px solid #ddd;"></th>
+</tr>
+</thead>
+<tbody>
+"#,
+        );
+
+        for contact in contacts {
+            let handle_esc = html_escape(&contact.handle);
+            let name_esc = html_escape(&contact.full_name);
+            let email_esc = html_escape(&contact.email);
+            let id = contact.id;
+
+            body.push_str(&format!(
+                r##"<tr id="contact-row-{id}">
+  <td style="padding:6px 8px;border-bottom:1px solid #eee;">
+    <span class="contact-field" data-field="handle" data-id="{id}">{handle_esc}</span>
+  </td>
+  <td style="padding:6px 8px;border-bottom:1px solid #eee;">
+    <span class="contact-field" data-field="full_name" data-id="{id}">{name_esc}</span>
+  </td>
+  <td style="padding:6px 8px;border-bottom:1px solid #eee;">
+    <span class="contact-field" data-field="email" data-id="{id}">{email_esc}</span>
+  </td>
+  <td style="padding:6px 8px;border-bottom:1px solid #eee;text-align:right;">
+    <a href="#" class="contact-delete-btn" data-id="{id}" title="Delete">&#128465;</a>
+    <form id="contact-del-{id}" method="post" action="/contacts/{id}/delete" style="display:none"></form>
+  </td>
+</tr>"##
+            ));
+        }
+
+        body.push_str("</tbody></table>");
+    }
+
+    // Inline editing JS for contact fields.
+    let contacts_js = r#"
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Inline editing for contact fields
+  document.querySelectorAll('.contact-field').forEach(span => {
+    span.style.cursor = 'text';
+    span.style.padding = '2px 4px';
+    span.style.borderRadius = '3px';
+    span.style.border = '1px solid transparent';
+    span.addEventListener('mouseenter', () => { span.style.background = '#f0f4ff'; });
+    span.addEventListener('mouseleave', () => { if (!span.querySelector('input')) span.style.background = ''; });
+
+    span.addEventListener('click', () => {
+      if (span.querySelector('input')) return;
+      const original = span.textContent;
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = original;
+      input.style.width = '100%';
+      input.style.padding = '2px 4px';
+      input.style.border = '1px solid #93b4f5';
+      input.style.borderRadius = '3px';
+      input.style.background = '#f0f4ff';
+      input.style.fontFamily = 'system-ui, sans-serif';
+      input.style.fontSize = '0.95rem';
+      span._savedText = original;
+      span.textContent = '';
+      span.appendChild(input);
+      input.focus();
+      input.select();
+
+      function save() {
+        const newVal = input.value.trim();
+        if (newVal === original) {
+          span.textContent = original;
+          span.style.background = '';
+          return;
+        }
+        const id = span.dataset.id;
+        const row = document.getElementById('contact-row-' + id);
+        const fields = row.querySelectorAll('.contact-field');
+        const data = {};
+        fields.forEach(f => {
+          data[f.dataset.field] = f === span ? newVal : f.textContent;
+        });
+        fetch('/contacts/' + id, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(data)
+        }).then(r => { if (r.ok) location.reload(); });
+      }
+
+      input.addEventListener('blur', save);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+        if (e.key === 'Escape') { span.textContent = original; span.style.background = ''; }
+      });
+    });
+  });
+
+  // Delete contact
+  document.querySelectorAll('.contact-delete-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (!confirm('Delete this contact?')) return;
+      const id = btn.dataset.id;
+      fetch('/contacts/' + id + '/delete', {method: 'POST'})
+        .then(r => { if (r.ok) location.reload(); });
+    });
+  });
+});
+</script>
+"#;
+
+    body.push_str(contacts_js);
+
+    wrap_html(&format!("Contacts — {display_name}"), &body)
 }
 
 /// Escape the five special HTML characters for use in HTML attributes.
@@ -694,6 +1197,10 @@ async fn main() -> anyhow::Result<()> {
         .route("/entries/{id}/delete", post(delete_entry_handler))
         .route("/entries/{id}/reorder", post(reorder_entry_handler))
         .route("/export", get(export_markdown))
+        .route("/contacts", get(contacts_page).post(add_contact_handler))
+        .route("/contacts/{id}", post(update_contact_handler))
+        .route("/contacts/{id}/delete", post(delete_contact_handler))
+        .route("/api/contacts", get(api_contacts))
         .with_state(state);
 
     let listener = tokio::net::TcpListener::bind("127.0.0.1:3030").await?;
@@ -886,7 +1393,7 @@ mod tests {
 
     #[test]
     fn test_render_index_empty_log_shows_no_entries_message() {
-        let html = render_index(&[], "worklog");
+        let html = render_index(&[], &[], "worklog");
         assert!(
             html.contains("No entries yet"),
             "empty log should say 'No entries yet'"
@@ -896,7 +1403,7 @@ mod tests {
     #[test]
     fn test_render_index_shows_week_header_with_year() {
         let entries = vec![entry_row(1, date(2026, 3, 9), "Task")];
-        let html = render_index(&entries, "worklog");
+        let html = render_index(&entries, &[], "worklog");
         assert!(
             html.contains("Week 11"),
             "rendered HTML should contain week header"
@@ -910,7 +1417,7 @@ mod tests {
     #[test]
     fn test_render_index_shows_items() {
         let entries = vec![entry_row(1, date(2026, 3, 9), "Attended standup")];
-        let html = render_index(&entries, "worklog");
+        let html = render_index(&entries, &[], "worklog");
         assert!(
             html.contains("Attended standup"),
             "rendered HTML should contain the work item"
@@ -924,7 +1431,7 @@ mod tests {
     #[test]
     fn test_render_index_escapes_html_in_items() {
         let entries = vec![entry_row(1, date(2026, 3, 9), "Fix <bug> & deploy")];
-        let html = render_index(&entries, "worklog");
+        let html = render_index(&entries, &[], "worklog");
         assert!(
             !html.contains("<bug>"),
             "raw < and > in items must be HTML-escaped by comrak"
@@ -934,7 +1441,7 @@ mod tests {
     #[test]
     fn test_render_index_includes_entry_text_class_and_data_id() {
         let entries = vec![entry_row(42, date(2026, 3, 9), "Attended standup")];
-        let html = render_index(&entries, "worklog");
+        let html = render_index(&entries, &[], "worklog");
         assert!(
             html.contains("class=\"entry-text\""),
             "index should use entry-text class for inline editing: {html}"
@@ -973,7 +1480,7 @@ mod tests {
 
     #[test]
     fn test_render_index_uses_custom_display_name() {
-        let html = render_index(&[], "My Work Tracker");
+        let html = render_index(&[], &[], "My Work Tracker");
         assert!(
             html.contains("My Work Tracker"),
             "index should show custom display name"
@@ -1005,10 +1512,166 @@ mod tests {
     #[test]
     fn test_render_index_includes_draggable_attribute() {
         let entries = vec![entry_row(1, date(2026, 3, 9), "Task")];
-        let html = render_index(&entries, "worklog");
+        let html = render_index(&entries, &[], "worklog");
         assert!(
             html.contains(r#"draggable="true""#),
             "list items should be draggable: {html}"
+        );
+    }
+
+    // --- resolve_mentions ---
+
+    fn make_contact(id: i64, handle: &str, full_name: &str, email: &str) -> ContactRow {
+        ContactRow {
+            id,
+            handle: handle.to_string(),
+            full_name: full_name.to_string(),
+            email: email.to_string(),
+            created_at: "2026-01-01".to_string(),
+        }
+    }
+
+    #[test]
+    fn test_resolve_mentions_no_contacts_unchanged() {
+        let html = "Worked with @alice on the feature";
+        let result = resolve_mentions(html, &[]);
+        assert_eq!(
+            result, html,
+            "with no contacts the text should be unchanged"
+        );
+    }
+
+    #[test]
+    fn test_resolve_mentions_unknown_handle_unchanged() {
+        let contacts = vec![make_contact(1, "bob", "Bob Jones", "bob@example.com")];
+        let html = "Worked with @alice today";
+        let result = resolve_mentions(html, &contacts);
+        assert!(
+            result.contains("@alice"),
+            "unknown handle should pass through: {result}"
+        );
+        assert!(
+            !result.contains("mention"),
+            "unknown handle must not get mention class: {result}"
+        );
+    }
+
+    #[test]
+    fn test_resolve_mentions_known_handle_replaced() {
+        let contacts = vec![make_contact(1, "alice", "Alice Smith", "alice@example.com")];
+        let html = "Worked with @alice on the feature";
+        let result = resolve_mentions(html, &contacts);
+        assert!(
+            result.contains(r#"class="mention""#),
+            "known handle should get mention span: {result}"
+        );
+        assert!(
+            result.contains("@alice"),
+            "handle text should be preserved: {result}"
+        );
+        assert!(
+            result.contains("Alice Smith"),
+            "tooltip should include full name: {result}"
+        );
+        assert!(
+            result.contains("alice@example.com"),
+            "tooltip should include email: {result}"
+        );
+    }
+
+    #[test]
+    fn test_resolve_mentions_case_insensitive() {
+        let contacts = vec![make_contact(1, "Alice", "Alice Smith", "alice@example.com")];
+        // Entry uses lowercase, contact stored as mixed case.
+        let html = "Worked with @alice today";
+        let result = resolve_mentions(html, &contacts);
+        assert!(
+            result.contains(r#"class="mention""#),
+            "case-insensitive lookup should match: {result}"
+        );
+    }
+
+    #[test]
+    fn test_resolve_mentions_skips_handles_inside_tags() {
+        // An @-sign inside an HTML attribute should not be touched.
+        let contacts = vec![make_contact(1, "alice", "Alice Smith", "alice@example.com")];
+        let html = r#"<a href="mailto:alice@example.com">link</a> and @alice"#;
+        let result = resolve_mentions(html, &contacts);
+        // The mailto href must be untouched.
+        assert!(
+            result.contains(r#"href="mailto:alice@example.com""#),
+            "href content must not be rewritten: {result}"
+        );
+        // The bare @alice in text content should be replaced.
+        assert!(
+            result.contains(r#"class="mention""#),
+            "text mention should still be replaced: {result}"
+        );
+    }
+
+    // --- render_contacts ---
+
+    #[test]
+    fn test_render_contacts_empty_shows_no_contacts_message() {
+        let html = render_contacts(&[], "worklog");
+        assert!(
+            html.contains("No contacts yet"),
+            "empty contacts should say 'No contacts yet': {html}"
+        );
+    }
+
+    #[test]
+    fn test_render_contacts_shows_contact_fields() {
+        let contacts = vec![make_contact(1, "alice", "Alice Smith", "alice@example.com")];
+        let html = render_contacts(&contacts, "worklog");
+        assert!(html.contains("alice"), "handle should appear: {html}");
+        assert!(
+            html.contains("Alice Smith"),
+            "full name should appear: {html}"
+        );
+        assert!(
+            html.contains("alice@example.com"),
+            "email should appear: {html}"
+        );
+    }
+
+    #[test]
+    fn test_render_contacts_has_add_form() {
+        let html = render_contacts(&[], "worklog");
+        assert!(
+            html.contains(r#"action="/contacts""#),
+            "contacts page should have add form: {html}"
+        );
+    }
+
+    #[test]
+    fn test_render_contacts_has_back_link() {
+        let html = render_contacts(&[], "worklog");
+        assert!(
+            html.contains(r#"href="/""#),
+            "contacts page should have a back link to worklog: {html}"
+        );
+    }
+
+    // --- contacts link on index ---
+
+    #[test]
+    fn test_render_index_has_contacts_button() {
+        let html = render_index(&[], &[], "worklog");
+        assert!(
+            html.contains(r#"href="/contacts""#),
+            "index page should have a Contacts button: {html}"
+        );
+    }
+
+    // --- mention CSS in wrap_html ---
+
+    #[test]
+    fn test_wrap_html_includes_mention_styles() {
+        let html = wrap_html("test", "body");
+        assert!(
+            html.contains("mention-popup"),
+            "wrap_html should include mention popup styles: {html}"
         );
     }
 }
