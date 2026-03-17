@@ -1071,6 +1071,10 @@ fn html_escape(s: &str) -> String {
         .replace('"', "&quot;")
         .replace('\'', "&#39;")
         .replace('\n', "&#10;")
+        .replace('\u{201c}', "&ldquo;")
+        .replace('\u{201d}', "&rdquo;")
+        .replace('\u{2018}', "&lsquo;")
+        .replace('\u{2019}', "&rsquo;")
 }
 
 // ---------------------------------------------------------------------------
