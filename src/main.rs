@@ -16,7 +16,7 @@ use db::{
     get_entry_by_id, get_max_sort_order, import_from_worklog, init_db, insert_contact,
     insert_entry, update_contact, update_entry, update_sort_order,
 };
-use parser::{DayEntry, WeekEntry, WorkLog, parse_worklog};
+use parser::parse_worklog;
 use rusqlite::Connection;
 use serde::{Deserialize, Serialize};
 use std::{path::PathBuf, sync::Arc};
@@ -307,63 +307,6 @@ fn parse_form_date(s: &str) -> Option<NaiveDate> {
     NaiveDate::parse_from_str(s.trim(), "%b %-d, %Y").ok()
 }
 
-/// Convert a flat list of `EntryRow`s (newest date first) into a `WorkLog`
-/// grouped by ISO year+week.
-///
-/// The week display label uses the ISO year so entries near year boundaries
-/// (e.g. week 53 of 2025 vs week 1 of 2026) are attributed to the correct year.
-///
-/// Currently only exercised by unit tests; kept for potential future callers
-/// that need the structured `WorkLog` type from in-memory rows.
-#[allow(dead_code)]
-fn entries_to_worklog(entries: Vec<db::EntryRow>) -> WorkLog {
-    let mut weeks: Vec<WeekEntry> = Vec::new();
-
-    for row in &entries {
-        let iso: IsoWeek = row.date.iso_week();
-        let week_number = iso.week();
-
-        let iso_year = iso.year();
-        let week_idx = match weeks
-            .iter()
-            .position(|w| w.week_number == week_number && w.iso_year == Some(iso_year))
-        {
-            Some(i) => i,
-            None => {
-                weeks.push(WeekEntry {
-                    week_number,
-                    iso_year: Some(iso_year),
-                    days: Vec::new(),
-                });
-                weeks.len() - 1
-            }
-        };
-
-        let week = &mut weeks[week_idx];
-
-        let day_idx = match week.days.iter().position(|d| d.date == row.date) {
-            Some(i) => i,
-            None => {
-                week.days.push(DayEntry {
-                    date: row.date,
-                    items: Vec::new(),
-                });
-                week.days.len() - 1
-            }
-        };
-
-        week.days[day_idx].items.push(row.item_text.clone());
-    }
-
-    // Within each week, days should be newest-first to match the visual order
-    // expected on the index page.
-    for week in &mut weeks {
-        week.days.sort_by(|a, b| b.date.cmp(&a.date));
-    }
-
-    WorkLog { weeks }
-}
-
 // ---------------------------------------------------------------------------
 // HTML rendering
 // ---------------------------------------------------------------------------
@@ -482,8 +425,7 @@ const STYLES: &str = r#"
 "#;
 
 /// Render the index page by grouping `EntryRow`s inline, preserving IDs for
-/// edit/delete links. The `entries_to_worklog` helper is kept separately for
-/// the export route which needs the `WorkLog` type.
+/// edit/delete links.
 fn render_index(entries: &[db::EntryRow], contacts: &[ContactRow], display_name: &str) -> String {
     // Group rows into (week_number, iso_year) → [(date, id, item_text)] buckets
     // while preserving the incoming newest-first ordering.
@@ -1333,50 +1275,6 @@ mod tests {
         let html = render_markdown("**bold** and ~~struck~~");
         assert!(html.contains("<strong>bold</strong>"), "bold: {html}");
         assert!(html.contains("<del>struck</del>"), "strikethrough: {html}");
-    }
-
-    // --- entries_to_worklog ---
-
-    #[test]
-    fn test_entries_to_worklog_empty_input() {
-        let wl = entries_to_worklog(vec![]);
-        assert!(
-            wl.weeks.is_empty(),
-            "no entries should produce empty WorkLog"
-        );
-    }
-
-    #[test]
-    fn test_entries_to_worklog_groups_by_week() {
-        let entries = vec![
-            db::EntryRow {
-                id: 1,
-                date: date(2026, 3, 10),
-                item_text: "Tue item".into(),
-                created_at: "2026-03-10".into(),
-                sort_order: 0,
-            },
-            db::EntryRow {
-                id: 2,
-                date: date(2026, 3, 9),
-                item_text: "Mon item".into(),
-                created_at: "2026-03-09".into(),
-                sort_order: 0,
-            },
-            db::EntryRow {
-                id: 3,
-                date: date(2026, 3, 2),
-                item_text: "Older item".into(),
-                created_at: "2026-03-02".into(),
-                sort_order: 0,
-            },
-        ];
-
-        let wl = entries_to_worklog(entries);
-        assert_eq!(wl.weeks.len(), 2, "two ISO weeks");
-        assert_eq!(wl.weeks[0].week_number, 11, "week 11 first (newest)");
-        assert_eq!(wl.weeks[0].days.len(), 2);
-        assert_eq!(wl.weeks[1].week_number, 10);
     }
 
     // --- render_index ---

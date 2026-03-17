@@ -86,54 +86,6 @@ pub fn get_all_contacts(conn: &Connection) -> Result<Vec<ContactRow>> {
     Ok(rows)
 }
 
-/// Fetch a single contact by its primary key.
-///
-/// Returns `None` if no row with that id exists.
-#[allow(dead_code)]
-pub fn get_contact_by_id(conn: &Connection, id: i64) -> Result<Option<ContactRow>> {
-    let mut stmt = conn
-        .prepare("SELECT id, handle, full_name, email, created_at FROM contacts WHERE id = ?1")?;
-
-    let mut rows = stmt
-        .query_map(params![id], |row| {
-            Ok(ContactRow {
-                id: row.get(0)?,
-                handle: row.get(1)?,
-                full_name: row.get(2)?,
-                email: row.get(3)?,
-                created_at: row.get(4)?,
-            })
-        })?
-        .map(|r| r.context("reading contact row"));
-
-    rows.next().transpose()
-}
-
-/// Fetch a single contact by handle (case-insensitive).
-///
-/// Returns `None` if no matching contact exists.
-// Exported for future callers; currently exercised only by tests.
-#[allow(dead_code)]
-pub fn get_contact_by_handle(conn: &Connection, handle: &str) -> Result<Option<ContactRow>> {
-    let mut stmt = conn.prepare(
-        "SELECT id, handle, full_name, email, created_at FROM contacts WHERE lower(handle) = lower(?1)",
-    )?;
-
-    let mut rows = stmt
-        .query_map(params![handle], |row| {
-            Ok(ContactRow {
-                id: row.get(0)?,
-                handle: row.get(1)?,
-                full_name: row.get(2)?,
-                email: row.get(3)?,
-                created_at: row.get(4)?,
-            })
-        })?
-        .map(|r| r.context("reading contact row"));
-
-    rows.next().transpose()
-}
-
 /// Update an existing contact's handle, full name, and email.
 pub fn update_contact(
     conn: &Connection,
@@ -184,47 +136,6 @@ pub fn get_all_entries(conn: &Connection) -> Result<Vec<EntryRow>> {
 
     let rows = stmt
         .query_map([], |row| {
-            let date_str: String = row.get(1)?;
-            Ok((
-                row.get::<_, i64>(0)?,
-                date_str,
-                row.get::<_, String>(2)?,
-                row.get::<_, String>(3)?,
-                row.get::<_, i32>(4)?,
-            ))
-        })?
-        .map(|r| {
-            let (id, date_str, item_text, created_at, sort_order) =
-                r.context("reading entry row")?;
-            let date = NaiveDate::parse_from_str(&date_str, "%Y-%m-%d")
-                .with_context(|| format!("parsing date '{date_str}'"))?;
-            Ok(EntryRow {
-                id,
-                date,
-                item_text,
-                created_at,
-                sort_order,
-            })
-        })
-        .collect::<Result<Vec<_>>>()?;
-
-    Ok(rows)
-}
-
-/// Return entries for a specific date, ordered by sort_order ascending.
-// Exported for use by future callers (e.g. a per-day API route); suppress the
-// dead_code lint since it is exercised by tests but not yet by any route.
-#[allow(dead_code)]
-pub fn get_entries_by_date(conn: &Connection, date: NaiveDate) -> Result<Vec<EntryRow>> {
-    let mut stmt = conn.prepare(
-        "SELECT id, date, item_text, created_at, sort_order
-         FROM entries
-         WHERE date = ?1
-         ORDER BY sort_order ASC",
-    )?;
-
-    let rows = stmt
-        .query_map(params![date.to_string()], |row| {
             let date_str: String = row.get(1)?;
             Ok((
                 row.get::<_, i64>(0)?,
@@ -595,21 +506,6 @@ mod tests {
     }
 
     #[test]
-    fn test_get_entries_by_date() {
-        let conn = open_memory_db();
-        insert_entry(&conn, date(2026, 3, 9), "Monday task", 0).unwrap();
-        insert_entry(&conn, date(2026, 3, 10), "Tuesday task", 0).unwrap();
-
-        let rows = get_entries_by_date(&conn, date(2026, 3, 9)).unwrap();
-        assert_eq!(
-            rows.len(),
-            1,
-            "should return only entries for the requested date"
-        );
-        assert_eq!(rows[0].item_text, "Monday task");
-    }
-
-    #[test]
     fn test_get_max_sort_order() {
         let conn = open_memory_db();
 
@@ -725,20 +621,6 @@ mod tests {
     }
 
     #[test]
-    fn test_get_contact_by_id_not_found() {
-        let conn = open_memory_db();
-        let result = get_contact_by_id(&conn, 9999).unwrap();
-        assert!(result.is_none(), "missing id should return None");
-    }
-
-    #[test]
-    fn test_get_contact_by_handle_not_found() {
-        let conn = open_memory_db();
-        let result = get_contact_by_handle(&conn, "nobody").unwrap();
-        assert!(result.is_none(), "unknown handle should return None");
-    }
-
-    #[test]
     fn test_insert_and_retrieve_contact() {
         let conn = open_memory_db();
         insert_contact(&conn, "alice", "Alice Smith", "alice@example.com").unwrap();
@@ -751,47 +633,6 @@ mod tests {
     }
 
     #[test]
-    fn test_get_contact_by_id_found() {
-        let conn = open_memory_db();
-        insert_contact(&conn, "bob", "Bob Jones", "bob@example.com").unwrap();
-        let all = get_all_contacts(&conn).unwrap();
-        let id = all[0].id;
-
-        let contact = get_contact_by_id(&conn, id)
-            .unwrap()
-            .expect("contact should be found by id");
-        assert_eq!(contact.handle, "bob");
-        assert_eq!(contact.full_name, "Bob Jones");
-    }
-
-    #[test]
-    fn test_get_contact_by_handle_found() {
-        let conn = open_memory_db();
-        insert_contact(&conn, "carol", "Carol White", "carol@example.com").unwrap();
-
-        let contact = get_contact_by_handle(&conn, "carol")
-            .unwrap()
-            .expect("contact should be found by handle");
-        assert_eq!(contact.email, "carol@example.com");
-    }
-
-    #[test]
-    fn test_get_contact_by_handle_case_insensitive() {
-        let conn = open_memory_db();
-        insert_contact(&conn, "Dave", "Dave Brown", "dave@example.com").unwrap();
-
-        let contact = get_contact_by_handle(&conn, "dave")
-            .unwrap()
-            .expect("lowercase lookup should find mixed-case handle");
-        assert_eq!(contact.handle, "Dave");
-
-        let contact2 = get_contact_by_handle(&conn, "DAVE")
-            .unwrap()
-            .expect("uppercase lookup should find mixed-case handle");
-        assert_eq!(contact2.handle, "Dave");
-    }
-
-    #[test]
     fn test_update_contact() {
         let conn = open_memory_db();
         insert_contact(&conn, "eve", "Eve Original", "eve@example.com").unwrap();
@@ -800,9 +641,12 @@ mod tests {
 
         update_contact(&conn, id, "eve", "Eve Updated", "eve2@example.com").unwrap();
 
-        let updated = get_contact_by_id(&conn, id).unwrap().unwrap();
-        assert_eq!(updated.full_name, "Eve Updated", "full_name should update");
-        assert_eq!(updated.email, "eve2@example.com", "email should update");
+        let updated = get_all_contacts(&conn).unwrap();
+        assert_eq!(
+            updated[0].full_name, "Eve Updated",
+            "full_name should update"
+        );
+        assert_eq!(updated[0].email, "eve2@example.com", "email should update");
     }
 
     #[test]
@@ -813,9 +657,6 @@ mod tests {
         let id = all[0].id;
 
         delete_contact(&conn, id).unwrap();
-
-        let result = get_contact_by_id(&conn, id).unwrap();
-        assert!(result.is_none(), "contact should be gone after deletion");
 
         let remaining = get_all_contacts(&conn).unwrap();
         assert!(remaining.is_empty(), "no contacts should remain");
